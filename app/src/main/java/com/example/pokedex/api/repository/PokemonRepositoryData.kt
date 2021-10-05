@@ -6,8 +6,8 @@ class PokemonRepositoryData(
     private val repository: PokemonRepository
 ) {
 
-    suspend fun pokemonList(): PokemonResponse? {
-        return repository.getPokemonList().body()
+    suspend fun pokemonList(limit: Int): PokemonResponse? {
+        return repository.getPokemonList(limit).body()
     }
 
 }

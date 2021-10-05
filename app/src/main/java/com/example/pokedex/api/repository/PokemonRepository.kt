@@ -8,6 +8,6 @@ import retrofit2.http.Query
 interface PokemonRepository {
 
     @GET("pokemon/")
-    suspend fun getPokemonList(@Query("limit") Int limit) : Response<PokemonResponse>
+    suspend fun getPokemonList(@Query("limit") limit: Int) : Response<PokemonResponse>
 
 }

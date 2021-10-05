@@ -12,13 +12,14 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: PokemonViewModel by viewModel()
+    private val LIMIT: Int = 1118
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         observerPokemonList()
         with(viewModel) {
-            getPokemonList()
+            getPokemonList(LIMIT)
         }
     }
 

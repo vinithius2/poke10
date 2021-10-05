@@ -18,9 +18,9 @@ class PokemonViewModel(
     val pokemonList: LiveData<List<Pokemon>>
         get() = _pokemonList
 
-    fun getPokemonList() {
+    fun getPokemonList(limit: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            _pokemonList.postValue(pokemonRepositoryData.pokemonList()?.results)
+            _pokemonList.postValue(pokemonRepositoryData.pokemonList(limit)?.results)
         }
     }
 
