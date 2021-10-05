@@ -10,6 +10,7 @@ class MyApplication: Application() {
     private val appModules by lazy {
         listOf(
             repositoryModule,
+            repositoryDataModule,
             viewModelModule,
             remoteDataModule
         )

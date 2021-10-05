@@ -1,26 +1,28 @@
 package com.example.pokedex
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.pokedex.api.data.PokemonList
+import com.example.pokedex.api.data.Pokemon
 import com.example.pokedex.api.repository.PokemonRepositoryData
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlin.collections.List
 
 class PokemonViewModel(
     private val pokemonRepositoryData: PokemonRepositoryData
 ): ViewModel() {
 
-    private lateinit var mPokemonList: MutableLiveData<PokemonList>
-    var pokemonList = mPokemonList
+    private val _pokemonList = MutableLiveData<List<Pokemon>>()
+    val pokemonList: LiveData<List<Pokemon>>
+        get() = _pokemonList
 
-    suspend fun getPokemonList() {
-        return coroutineScope {
-            withContext(IO) {
-                mPokemonList.value = pokemonRepositoryData.list().body()
-            }
+    fun getPokemonList() {
+        CoroutineScope(Dispatchers.IO).launch {
+            _pokemonList.postValue(pokemonRepositoryData.pokemonList()?.results)
         }
     }
+
 
 }

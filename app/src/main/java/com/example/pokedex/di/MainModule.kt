@@ -9,11 +9,11 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-//val repositoryInterface = module {
-//    single { get<Retrofit>().create(PokemonRepository::class.java) }
-//}
-
 val repositoryModule = module {
+    single { get<Retrofit>().create(PokemonRepository::class.java) }
+}
+
+val repositoryDataModule = module {
     single { PokemonRepositoryData(get()) }
 }
 

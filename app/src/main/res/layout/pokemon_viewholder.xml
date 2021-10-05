@@ -3,13 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="wrap_content">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_pokemon"
+    <TextView
+        android:id="@+id/title_pokemon"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-    />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:textSize="40sp"
+        tools:text="Picachu"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
