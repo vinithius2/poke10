@@ -1,12 +1,12 @@
 package com.example.pokedex
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.api.data.Pokemon
+import com.squareup.picasso.Picasso
 
 class PokemonAdapter(
     dataSet: List<Pokemon>
@@ -14,7 +14,8 @@ class PokemonAdapter(
 
     private var dataSetAll: MutableList<Pokemon> = dataSet.toMutableList()
     private var dataSetFilter: MutableList<Pokemon> = dataSet.toMutableList()
-    var onCallBackdataSetFilterSize: ((size: Int) -> Unit)? = null
+    var onCallBackDataSetFilterSize: ((size: Int) -> Unit)? = null
+    var onCallBackClickDetail: ((url: String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -23,9 +24,19 @@ class PokemonAdapter(
     }
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
-        holder.textView.text = dataSetFilter[position].name.capitalize()
+        val name = dataSetFilter[position].name
+        // capitalize deprecated =/
+        holder.textView.text = name.lowercase().replaceFirstChar(Char::uppercase)
+        val url_image = "https://img.pokemondb.net/artwork/${name.lowercase()}.jpg"
+        Picasso.get()
+            .load(url_image)
+            .error(R.drawable.ic_error_image)
+            .into(holder.image)
         holder.textView.setOnClickListener {
-            Log.i("Click", dataSetFilter[position].url)
+            dataSetFilter[position].url?.let { url -> onCallBackClickDetail?.invoke(url) }
+        }
+        holder.image.setOnClickListener {
+            dataSetFilter[position].url?.let { url -> onCallBackClickDetail?.invoke(url) }
         }
     }
 
@@ -58,7 +69,7 @@ class PokemonAdapter(
             dataSetFilter.clear()
             p1?.values?.let { values ->
                 dataSetFilter.addAll(values as Collection<Pokemon>)
-                onCallBackdataSetFilterSize?.invoke(dataSetFilter.size)
+                onCallBackDataSetFilterSize?.invoke(dataSetFilter.size)
             }
         }
     }

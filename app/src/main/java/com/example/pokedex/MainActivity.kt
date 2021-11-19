@@ -1,5 +1,6 @@
 package com.example.pokedex
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -50,13 +51,20 @@ class MainActivity : AppCompatActivity() {
         val layout_sem_itens_na_busca = findViewById<LinearLayout>(R.id.layout_sem_itens_na_busca)
         viewModel.pokemonList.observe(this, { pokemonList ->
             pokemonAdapter = PokemonAdapter(pokemonList).apply {
-                onCallBackdataSetFilterSize = { size ->
+                onCallBackDataSetFilterSize = { size ->
                     notifyDataSetChanged()
                     if(size > 0) {
                         layout_sem_itens_na_busca.visibility = View.INVISIBLE
                     } else {
                         layout_sem_itens_na_busca.visibility = View.VISIBLE
                     }
+                }
+                onCallBackClickDetail = { url ->
+                    val bundle = Bundle()
+                    bundle.putString("url_detail", url)
+                    val intent = Intent(this@MainActivity, PokemonDetailActivity::class.java)
+                    intent.putExtras(bundle)
+                    startActivity(intent)
                 }
             }
             recyclerView.adapter = pokemonAdapter

@@ -17,6 +17,10 @@ class PokemonViewModel(
     val pokemonList: LiveData<List<Pokemon>>
         get() = _pokemonList
 
+    private val _pokemonDetail = MutableLiveData<Pokemon>()
+    val pokemonDetail: LiveData<Pokemon>
+        get() = _pokemonDetail
+
     private val _pokemonListLoading = MutableLiveData<Boolean>()
     val pokemonListLoading: LiveData<Boolean>
         get() = _pokemonListLoading
@@ -25,6 +29,14 @@ class PokemonViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             _pokemonListLoading.postValue(true)
             _pokemonList.postValue(pokemonRepositoryData.pokemonList(limit)?.results)
+            _pokemonListLoading.postValue(false)
+        }
+    }
+
+    fun getPokemonDetail(id: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _pokemonListLoading.postValue(true)
+            _pokemonDetail.postValue(pokemonRepositoryData.pokemonDetail(id))
             _pokemonListLoading.postValue(false)
         }
     }

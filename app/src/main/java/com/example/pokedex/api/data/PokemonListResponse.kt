@@ -1,6 +1,6 @@
 package com.example.pokedex.api.data
 
-data class PokemonResponse (
+data class PokemonListResponse (
     var count: Int,
     var next: String?,
     var previous: String?,
