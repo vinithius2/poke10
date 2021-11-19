@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Pokedex</string>
+    <string name="n_o_existe_itens_na_busca">Não existe itens na busca</string>
 </resources>

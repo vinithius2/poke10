@@ -8,7 +8,6 @@ import com.example.pokedex.api.repository.PokemonRepositoryData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.collections.List
 
 class PokemonViewModel(
     private val pokemonRepositoryData: PokemonRepositoryData
@@ -18,11 +17,16 @@ class PokemonViewModel(
     val pokemonList: LiveData<List<Pokemon>>
         get() = _pokemonList
 
+    private val _pokemonListLoading = MutableLiveData<Boolean>()
+    val pokemonListLoading: LiveData<Boolean>
+        get() = _pokemonListLoading
+
     fun getPokemonList(limit: Int) {
         CoroutineScope(Dispatchers.IO).launch {
+            _pokemonListLoading.postValue(true)
             _pokemonList.postValue(pokemonRepositoryData.pokemonList(limit)?.results)
+            _pokemonListLoading.postValue(false)
         }
     }
-
 
 }
