@@ -9,5 +9,6 @@ data class Pokemon (
     var base_experience: Int?,
     var stats: List<Stat>?,
     var types: List<Type>?,
-    var abilities: List<Abilities>?
+    var abilities: List<Abilities>?,
+    var sprites: Sprites
 )
