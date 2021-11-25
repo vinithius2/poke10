@@ -25,17 +25,13 @@ class PokemonAdapter(
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         val name = dataSetFilter[position].name
-        // capitalize deprecated =/
         holder.textView.text = name.lowercase().replaceFirstChar(Char::uppercase)
         val url_image = "https://img.pokemondb.net/artwork/${name.lowercase()}.jpg"
         Picasso.get()
             .load(url_image)
             .error(R.drawable.ic_error_image)
             .into(holder.image)
-        holder.textView.setOnClickListener {
-            dataSetFilter[position].url?.let { url -> onCallBackClickDetail?.invoke(url) }
-        }
-        holder.image.setOnClickListener {
+        holder.layout.setOnClickListener {
             dataSetFilter[position].url?.let { url -> onCallBackClickDetail?.invoke(url) }
         }
     }
