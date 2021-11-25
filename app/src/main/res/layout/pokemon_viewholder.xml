@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/viewholder_layout">
 
     <ImageView
         android:id="@+id/image_pokemon"
@@ -24,7 +25,17 @@
         app:layout_constraintTop_toTopOf="@+id/image_pokemon"
         app:layout_constraintBottom_toBottomOf="@+id/image_pokemon"
         app:layout_constraintLeft_toRightOf="@+id/image_pokemon"
-        tools:text="Picachu"
+        tools:text="Pikachu"
         />
+
+    <ImageView
+        android:id="@+id/image_pokeball"
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/pokeball_01"
+        app:layout_constraintTop_toTopOf="@+id/image_pokemon"
+        app:layout_constraintBottom_toBottomOf="@+id/image_pokemon"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
