@@ -150,9 +150,10 @@
                     android:layout_height="250dp"
                     android:layout_margin="15dp"
                     tools:chart_barsColor="@color/teal_200"
-                    app:chart_spacing="20dp"
-                    app:chart_barsRadius="6dp"
-                    app:chart_labelsSize="10sp"
+                    app:chart_barsBackgroundColor="@color/gray_95"
+                    app:chart_spacing="25dp"
+                    app:chart_barsRadius="5dp"
+                    app:chart_labelsSize="12sp"
                     />
 
             </androidx.cardview.widget.CardView>

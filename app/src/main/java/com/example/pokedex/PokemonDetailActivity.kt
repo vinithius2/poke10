@@ -1,6 +1,5 @@
 package com.example.pokedex
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -9,23 +8,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.db.williamchart.view.BarChartView
 import com.db.williamchart.view.HorizontalBarChartView
-import com.db.williamchart.view.LineChartView
 import com.example.pokedex.api.data.Pokemon
 import com.squareup.picasso.Picasso
 import org.koin.android.viewmodel.ext.android.viewModel
-import kotlin.math.round
 
 
 class PokemonDetailActivity : AppCompatActivity() {
@@ -57,6 +53,11 @@ class PokemonDetailActivity : AppCompatActivity() {
         text_weight = findViewById(R.id.text_weight)
         observerPokemonLoading()
         observerPokemon()
+    }
+
+    private fun changeColorToolBar(color: Int) {
+        val window: Window = this.getWindow()
+        window.statusBarColor = color
     }
 
     private fun observerPokemonLoading() {
@@ -131,8 +132,9 @@ class PokemonDetailActivity : AppCompatActivity() {
                         val dominant = it.dominantSwatch ?: light
                         val main_layout: View = findViewById(R.id.main_layout)
                         dominant?.let { color ->
+                            changeColorToolBar(color.rgb)
                             val hexColorAlpha = java.lang.String.format("#4D%06X", 0xFFFFFF and color.rgb)
-                            val hexColor = java.lang.String.format("#%06X", 0xFFFFFF and color.rgb)
+                            val hexColor = java.lang.String.format("#D9%06X", 0xFFFFFF and color.rgb)
                             val colorDrawableActionBar = ColorDrawable(Color.parseColor(hexColor))
                             val colorDrawableLayoult = ColorDrawable(Color.parseColor(hexColorAlpha))
                             supportActionBar?.setBackgroundDrawable(colorDrawableActionBar)

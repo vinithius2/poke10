@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 
 class PokemonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    val layout: View = itemView.findViewById(R.id.viewholder_layout)
+    val layout_data: View = itemView.findViewById(R.id.layout_data)
+    val layout_pokeball: View = itemView.findViewById(R.id.layout_pokeball)
     val textView: TextView = itemView.findViewById(R.id.title_pokemon)
-    val image: ImageView = itemView.findViewById(R.id.image_pokemon)
+    val image_pokemon: ImageView = itemView.findViewById(R.id.image_pokemon)
+    val image_pokeball: ImageView = itemView.findViewById(R.id.image_pokeball)
 
 }

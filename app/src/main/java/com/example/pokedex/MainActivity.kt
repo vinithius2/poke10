@@ -45,9 +45,7 @@ class MainActivity : AppCompatActivity() {
     private fun observerPokemonList() {
         recyclerView = findViewById(R.id.recycler_view_pokemon)
         val layoutManager = LinearLayoutManager(applicationContext)
-        val divider = DividerItemDecoration(recyclerView.context, layoutManager.orientation)
         recyclerView.layoutManager = layoutManager
-        recyclerView.addItemDecoration(divider)
         val layout_sem_itens_na_busca = findViewById<LinearLayout>(R.id.layout_sem_itens_na_busca)
         viewModel.pokemonList.observe(this, { pokemonList ->
             pokemonAdapter = PokemonAdapter(pokemonList).apply {
