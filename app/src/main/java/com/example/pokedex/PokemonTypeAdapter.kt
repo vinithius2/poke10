@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.api.data.Type
 
-class PokemonTypeAdapter (
+class PokemonTypeAdapter(
     val pokemon_type_list: List<Type>
-): RecyclerView.Adapter<PokemonTypeViewHolder>() {
+) : RecyclerView.Adapter<PokemonTypeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonTypeViewHolder {
         val view = LayoutInflater.from(parent.context)

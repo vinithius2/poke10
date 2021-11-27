@@ -1,6 +1,6 @@
 package com.example.pokedex.api.data
 
-data class Sprites (
+data class Sprites(
     var back_default: String,
     var back_female: String?,
     var back_shiny: String,

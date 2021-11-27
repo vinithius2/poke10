@@ -1,6 +1,6 @@
 package com.example.pokedex.api.data
 
-data class Type (
+data class Type(
     var slot: Int,
     var type: Default,
 )

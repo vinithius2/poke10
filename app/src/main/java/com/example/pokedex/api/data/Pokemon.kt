@@ -1,6 +1,6 @@
 package com.example.pokedex.api.data
 
-data class Pokemon (
+data class Pokemon(
     var id: Int?,
     var name: String,
     var url: String?,

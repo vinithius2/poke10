@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             pokemonAdapter = PokemonAdapter(pokemonList).apply {
                 onCallBackDataSetFilterSize = { size ->
                     notifyDataSetChanged()
-                    if(size > 0) {
+                    if (size > 0) {
                         layout_sem_itens_na_busca.visibility = View.INVISIBLE
                     } else {
                         layout_sem_itens_na_busca.visibility = View.VISIBLE
@@ -74,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         val item = menu?.findItem(R.id.action_search)
         item?.let {
             val searchView: SearchView = item.actionView as SearchView
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
                     return false
                 }

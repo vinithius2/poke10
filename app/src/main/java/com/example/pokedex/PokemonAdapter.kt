@@ -1,18 +1,14 @@
 package com.example.pokedex
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.drawable.AnimationDrawable
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.api.data.Pokemon
 import com.squareup.picasso.Picasso
@@ -20,7 +16,7 @@ import com.squareup.picasso.Picasso
 
 class PokemonAdapter(
     dataSet: List<Pokemon>
-): RecyclerView.Adapter<PokemonViewHolder>(), Filterable {
+) : RecyclerView.Adapter<PokemonViewHolder>(), Filterable {
 
     private var dataSetAll: MutableList<Pokemon> = dataSet.toMutableList()
     private var dataSetFilter: MutableList<Pokemon> = dataSet.toMutableList()
@@ -67,14 +63,22 @@ class PokemonAdapter(
             val is_favorite = getIsFavorite(name)
             if (is_favorite) {
                 setPreferences(name, false)
-                holder.image_pokeball.background = ContextCompat.getDrawable(view.context, R.drawable.animation_click_off)
-                val frameAnimation: AnimationDrawable = holder.image_pokeball.background as AnimationDrawable
+                holder.image_pokeball.background =
+                    ContextCompat.getDrawable(view.context, R.drawable.animation_click_off)
+                val frameAnimation: AnimationDrawable =
+                    holder.image_pokeball.background as AnimationDrawable
                 frameAnimation.start()
             } else {
-                Toast.makeText(view.context, "${name.lowercase().replaceFirstChar(Char::uppercase)} capturado! ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    view.context,
+                    "${name.lowercase().replaceFirstChar(Char::uppercase)} capturado! ",
+                    Toast.LENGTH_SHORT
+                ).show()
                 setPreferences(name, true)
-                holder.image_pokeball.background = ContextCompat.getDrawable(view.context, R.drawable.animation_click_on)
-                val frameAnimation: AnimationDrawable = holder.image_pokeball.background as AnimationDrawable
+                holder.image_pokeball.background =
+                    ContextCompat.getDrawable(view.context, R.drawable.animation_click_on)
+                val frameAnimation: AnimationDrawable =
+                    holder.image_pokeball.background as AnimationDrawable
                 frameAnimation.start()
             }
         }
@@ -83,15 +87,17 @@ class PokemonAdapter(
     private fun getStatusPokeball(name: String, holder: PokemonViewHolder) {
         val is_favorite = getIsFavorite(name)
         if (is_favorite) {
-            holder.image_pokeball.background = ContextCompat.getDrawable(view.context, R.drawable.pokeball_01)
+            holder.image_pokeball.background =
+                ContextCompat.getDrawable(view.context, R.drawable.pokeball_01)
         } else {
-            holder.image_pokeball.background = ContextCompat.getDrawable(view.context, R.drawable.pokeball_03_gray)
+            holder.image_pokeball.background =
+                ContextCompat.getDrawable(view.context, R.drawable.pokeball_03_gray)
         }
     }
 
     private fun setPreferences(name: String, value: Boolean) {
         val sharedPref = view.context.getSharedPreferences(name, Context.MODE_PRIVATE)
-        with (sharedPref.edit()) {
+        with(sharedPref.edit()) {
             putBoolean(name, value)
             commit()
         }

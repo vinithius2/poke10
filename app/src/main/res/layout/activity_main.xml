@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -11,8 +10,7 @@
         android:id="@+id/recycler_view_pokemon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/pokemon_viewholder"
-    />
+        tools:listitem="@layout/pokemon_viewholder" />
 
     <ProgressBar
         android:id="@+id/loading_list_pokemon"
@@ -20,17 +18,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/layout_sem_itens_na_busca"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         android:visibility="invisible"
         tools:ignore="UseCompoundDrawables">
 
@@ -38,10 +36,10 @@
             android:id="@+id/sem_itens_na_busca"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_assignment_late_24"
+            android:contentDescription="@string/n_o_existe_itens_na_busca"
             android:maxWidth="100dp"
             android:maxHeight="500dp"
-            android:contentDescription="@string/n_o_existe_itens_na_busca" />
+            android:src="@drawable/ic_baseline_assignment_late_24" />
 
         <TextView
             android:layout_width="wrap_content"
