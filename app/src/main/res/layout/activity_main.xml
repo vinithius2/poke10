@@ -36,15 +36,24 @@
             android:id="@+id/sem_itens_na_busca"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/n_o_existe_itens_na_busca"
+            android:contentDescription="@string/there_are_no_items_in_the_search_title"
             android:maxWidth="100dp"
             android:maxHeight="500dp"
             android:src="@drawable/ic_baseline_assignment_late_24" />
 
         <TextView
+            android:id="@+id/msg_empty_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/n_o_existe_itens_na_busca"
+            android:text="@string/there_are_no_items_in_the_search_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/sem_itens_na_busca" />
+
+        <TextView
+            android:id="@+id/msg_empty_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:textSize="10sp"
             app:layout_constraintTop_toBottomOf="@+id/sem_itens_na_busca" />
 
 

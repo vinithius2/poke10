@@ -10,4 +10,11 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
     />
 
+    <item
+        android:id="@+id/action_more_menu"
+        android:title="@string/more_menu"
+        android:icon="@drawable/ic_baseline_is_not_favorite_24"
+        app:showAsAction="always|collapseActionView"
+    />
+
 </menu>

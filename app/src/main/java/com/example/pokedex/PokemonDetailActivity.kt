@@ -121,7 +121,6 @@ class PokemonDetailActivity : AppCompatActivity() {
             .into(image_pokemon)
         Picasso.get()
             .load(pokemon.sprites.front_default)
-            .error(R.drawable.ic_error_image)
             .into(image_sprite)
     }
 

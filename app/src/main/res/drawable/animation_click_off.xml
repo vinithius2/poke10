@@ -3,11 +3,11 @@
     android:oneshot="true">
     <item
         android:drawable="@drawable/pokeball_01"
-        android:duration="200" />
+        android:duration="100" />
     <item
         android:drawable="@drawable/pokeball_02_gray"
-        android:duration="200" />
+        android:duration="100" />
     <item
         android:drawable="@drawable/pokeball_03_gray"
-        android:duration="200" />
+        android:duration="100" />
 </animation-list>
