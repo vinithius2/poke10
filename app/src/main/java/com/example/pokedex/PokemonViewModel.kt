@@ -8,6 +8,7 @@ import com.example.pokedex.api.repository.PokemonRepositoryData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
 import java.util.concurrent.TimeoutException
 
 class PokemonViewModel(
@@ -26,13 +27,18 @@ class PokemonViewModel(
     val pokemonListLoading: LiveData<Boolean>
         get() = _pokemonListLoading
 
+    private val _pokemonError = MutableLiveData<Boolean>()
+    val pokemonError: LiveData<Boolean>
+        get() = _pokemonError
+
     fun getPokemonList(limit: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             _pokemonListLoading.postValue(true)
             try {
                 _pokemonList.postValue(pokemonRepositoryData.pokemonList(limit)?.results)
-            } catch (e: TimeoutException) {
-                _pokemonList.postValue(listOf<Pokemon>())
+            } catch (e: SocketTimeoutException) {
+                _pokemonList.postValue(listOf())
+                _pokemonError.postValue(true)
             }
             _pokemonListLoading.postValue(false)
         }
@@ -41,7 +47,11 @@ class PokemonViewModel(
     fun getPokemonDetail(id: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             _pokemonListLoading.postValue(true)
-            _pokemonDetail.postValue(pokemonRepositoryData.pokemonDetail(id))
+            try {
+                _pokemonDetail.postValue(pokemonRepositoryData.pokemonDetail(id))
+            } catch (e: SocketTimeoutException) {
+                _pokemonError.postValue(true)
+            }
             _pokemonListLoading.postValue(false)
         }
     }

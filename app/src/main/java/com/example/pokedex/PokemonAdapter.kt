@@ -39,7 +39,7 @@ class PokemonAdapter(
         val name = dataSetFilter[position].name
         holder.textView.text = name.lowercase().replaceFirstChar(Char::uppercase)
         setImage(name, holder)
-        detail(dataSetFilter[position].url, getIsFavorite(name), holder)
+        detail(dataSetFilter[position].url, name, holder)
         getStatusImagePokeball(name, holder)
         clickPokeball(name, position, dataSetFilter[position], holder)
     }
@@ -48,7 +48,7 @@ class PokemonAdapter(
      * Pega se o pokemon é favorito ou não, caso nulo, retorna falso.
      */
     private fun getIsFavorite(name: String): Boolean {
-        val sharedPref = view.context.getSharedPreferences("FAVORITES", Context.MODE_PRIVATE)
+        val sharedPref = view.context.getSharedPreferences(FAVORITES, Context.MODE_PRIVATE)
         return sharedPref.getBoolean(name, false)
     }
 
@@ -77,8 +77,9 @@ class PokemonAdapter(
     /**
      * Chamada para a tela de detalhes do Pokemon.
      */
-    private fun detail(url: String?, favorite: Boolean, holder: PokemonViewHolder) {
+    private fun detail(url: String?, name: String, holder: PokemonViewHolder) {
         holder.layout_data.setOnClickListener {
+            val favorite = getIsFavorite(name)
             url?.let { url -> onCallBackClickDetail?.invoke(url, favorite) }
         }
     }
