@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     private var favorites_filter = false
     private lateinit var pokemonAdapter: PokemonAdapter
     private lateinit var recyclerView: RecyclerView
-    private val LIMIT: Int = 1118
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -174,4 +173,9 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    companion object {
+        const val LIMIT: Int = 1118
+    }
+
 }

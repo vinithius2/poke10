@@ -7,4 +7,5 @@
     <string name="more_menu">Mais menu</string>
     <string name="favorite_pokemon_is_empty_title">Não há pokemons favoritos!</string>
     <string name="favorite_pokemon_is_empty_subtitle">É necessário favoritar algum pokemon, para voltar, clique no ícone de coração.</string>
+    <string name="base_exp">Base Exp:</string>
 </resources>

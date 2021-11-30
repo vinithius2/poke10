@@ -48,7 +48,16 @@ class PokemonViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             _pokemonListLoading.postValue(true)
             try {
-                _pokemonDetail.postValue(pokemonRepositoryData.pokemonDetail(id))
+                val pokemon = pokemonRepositoryData.pokemonDetail(id)
+                pokemon?.let {
+                    pokemonRepositoryData.pokemonEncounters(id)?.let { location_list ->
+                        it.apply { encounters = location_list }
+                    }
+                    pokemonRepositoryData.pokemonEvolution(id)?.let { evolution_chain ->
+                        it.apply { evolution = evolution_chain }
+                    }
+                }
+                _pokemonDetail.postValue(pokemon)
             } catch (e: SocketTimeoutException) {
                 _pokemonError.postValue(true)
             }

@@ -1,8 +1,7 @@
 package com.example.pokedex.api.repository
 
 
-import com.example.pokedex.api.data.Pokemon
-import com.example.pokedex.api.data.PokemonListResponse
+import com.example.pokedex.api.data.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -15,5 +14,11 @@ interface PokemonRepository {
 
     @GET("pokemon/{id}")
     suspend fun getPokemonDetail(@Path("id") id: Int) : Response<Pokemon>
+
+    @GET("evolution-chain/{id}")
+    suspend fun getPokemonEvolution(@Path("id") id: Int) : Response<EvolutionChain>
+
+    @GET("pokemon/{id}/encounters")
+    suspend fun getPokemonEncounters(@Path("id") id: Int) : Response<List<Location>>
 
 }

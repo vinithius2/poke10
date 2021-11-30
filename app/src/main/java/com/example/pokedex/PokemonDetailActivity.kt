@@ -29,11 +29,13 @@ class PokemonDetailActivity : AppCompatActivity() {
 
     private val viewModel: PokemonViewModel by viewModel()
     private lateinit var pokemonTypeAdapter: PokemonTypeAdapter
+    private lateinit var pokemonAbilitiesAdapter: PokemonAbilitiesAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var image_pokemon: ImageView
     private lateinit var image_sprite: ImageView
     private lateinit var text_weight: TextView
     private lateinit var text_height: TextView
+    private lateinit var text_base_value: TextView
     private var pokemon_name = ""
     private var favorite = false
     private var palette: Palette? = null
@@ -55,6 +57,7 @@ class PokemonDetailActivity : AppCompatActivity() {
         image_sprite = findViewById(R.id.image_sprite)
         text_height = findViewById(R.id.text_height)
         text_weight = findViewById(R.id.text_weight)
+        text_base_value = findViewById(R.id.text_base_value)
         observerPokemonLoading()
         observerPokemon()
     }
@@ -82,22 +85,17 @@ class PokemonDetailActivity : AppCompatActivity() {
             val url_image = "https://img.pokemondb.net/artwork/${pokemon.name.lowercase()}.jpg"
             getDominantColor(url_image)
             getPokemonImage(pokemon, url_image)
-            getStats(pokemon)
             getTexts(pokemon)
-
-            recyclerView = findViewById(R.id.recycler_view_pokemon_type)
-            val layoutManager = GridLayoutManager(applicationContext, 2)
-            recyclerView.layoutManager = layoutManager
-            pokemon.types?.let {
-                pokemonTypeAdapter = PokemonTypeAdapter(it)
-                recyclerView.adapter = pokemonTypeAdapter
-            }
+            getStats(pokemon)
+            getTypes(pokemon)
+            getAbilities(pokemon)
         })
     }
 
     private fun getTexts(pokemon: Pokemon) {
         text_height.text = pokemon.height.toString()
         text_weight.text = pokemon.weight.toString()
+        text_base_value.text = pokemon.base_experience.toString()
     }
 
     private fun getStats(pokemon: Pokemon) {
@@ -119,6 +117,26 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
         myChart.labelsFormatter = { it.toInt().toString() }
         myChart.show(mySet.toList())
+    }
+
+    private fun getTypes(pokemon: Pokemon) {
+        recyclerView = findViewById(R.id.recycler_view_pokemon_type)
+        val layoutManager = GridLayoutManager(applicationContext, 2)
+        recyclerView.layoutManager = layoutManager
+        pokemon.types?.let {
+            pokemonTypeAdapter = PokemonTypeAdapter(it)
+            recyclerView.adapter = pokemonTypeAdapter
+        }
+    }
+
+    private fun getAbilities(pokemon: Pokemon) {
+        recyclerView = findViewById(R.id.recycler_view_pokemon_abilities)
+        val layoutManager = GridLayoutManager(applicationContext, 2)
+        recyclerView.layoutManager = layoutManager
+        pokemon.abilities?.let {
+            pokemonAbilitiesAdapter = PokemonAbilitiesAdapter(it)
+            recyclerView.adapter = pokemonAbilitiesAdapter
+        }
     }
 
     private fun getPokemonImage(pokemon: Pokemon, url_image: String) {
