@@ -23,7 +23,7 @@ class PokemonAdapter(
 
     var onCallBackDataSetFilterSize: ((size: Int) -> Unit)? = null
     var onCallBackDataSetFilterRemove: ((size: Int, position: Int) -> Unit)? = null
-    var onCallBackClickDetail: ((url: String) -> Unit)? = null
+    var onCallBackClickDetail: ((url: String, favorites_filter: Boolean) -> Unit)? = null
 
     private var char_sequence: CharSequence = ""
     private var favorites_filter = false
@@ -39,7 +39,7 @@ class PokemonAdapter(
         val name = dataSetFilter[position].name
         holder.textView.text = name.lowercase().replaceFirstChar(Char::uppercase)
         setImage(name, holder)
-        detail(dataSetFilter[position].url, holder)
+        detail(dataSetFilter[position].url, getIsFavorite(name), holder)
         getStatusImagePokeball(name, holder)
         clickPokeball(name, position, dataSetFilter[position], holder)
     }
@@ -50,6 +50,17 @@ class PokemonAdapter(
     private fun getIsFavorite(name: String): Boolean {
         val sharedPref = view.context.getSharedPreferences("FAVORITES", Context.MODE_PRIVATE)
         return sharedPref.getBoolean(name, false)
+    }
+
+    /**
+     * Adiciona os valores booleanos de favoritar.
+     */
+    private fun setPreferences(name: String, value: Boolean) {
+        val sharedPref = view.context.getSharedPreferences(FAVORITES, Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean(name, value)
+            commit()
+        }
     }
 
     /**
@@ -66,9 +77,9 @@ class PokemonAdapter(
     /**
      * Chamada para a tela de detalhes do Pokemon.
      */
-    private fun detail(url: String?, holder: PokemonViewHolder) {
+    private fun detail(url: String?, favorite: Boolean, holder: PokemonViewHolder) {
         holder.layout_data.setOnClickListener {
-            url?.let { url -> onCallBackClickDetail?.invoke(url) }
+            url?.let { url -> onCallBackClickDetail?.invoke(url, favorite) }
         }
     }
 
@@ -119,17 +130,6 @@ class PokemonAdapter(
         } else {
             holder.image_pokeball.background =
                 ContextCompat.getDrawable(view.context, R.drawable.pokeball_03_gray)
-        }
-    }
-
-    /**
-     * Adiciona os valores booleanos de favoritar.
-     */
-    private fun setPreferences(name: String, value: Boolean) {
-        val sharedPref = view.context.getSharedPreferences(FAVORITES, Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putBoolean(name, value)
-            commit()
         }
     }
 

@@ -35,6 +35,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Notifica o adapter todas vez que voltar da tela de detalhes, pois pode haver mudanças no status
+     * de favoritos.
+     */
+    override fun onResume() {
+        if (::pokemonAdapter.isInitialized) {
+            pokemonAdapter.notifyDataSetChanged()
+        }
+        super.onResume()
+    }
+
     private fun observerPokemonLoading() {
         viewModel.pokemonListLoading.observe(this, { loading ->
             val loading_list_pokemon = findViewById<ProgressBar>(R.id.loading_list_pokemon)
@@ -85,9 +96,10 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                onCallBackClickDetail = { url ->
+                onCallBackClickDetail = { url, favorite ->
                     val bundle = Bundle()
                     bundle.putString("url_detail", url)
+                    bundle.putBoolean("favorite", favorite)
                     val intent = Intent(this@MainActivity, PokemonDetailActivity::class.java)
                     intent.putExtras(bundle)
                     startActivity(intent)
@@ -97,6 +109,9 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Altera no título, subtítulo e a imagem do fundo da tela pata notificar quando não há favoritos
+     */
     private fun msgFavoriteIsEmpty(
         title: TextView,
         subtitle: TextView,
@@ -109,6 +124,9 @@ class MainActivity : AppCompatActivity() {
         image_itens_empty.layoutParams.width = 100
     }
 
+    /**
+     * Altera no título, subtítulo e a imagem do fundo da tela pata notificar quando não há pokemons filtrados
+     */
     private fun msgFilterIsEmpty(
         title: TextView,
         subtitle: TextView,
@@ -143,7 +161,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_more_menu -> {
+            R.id.action_favorite -> {
                 favorites_filter = !favorites_filter
                 val is_favorite =
                     ContextCompat.getDrawable(this, R.drawable.ic_baseline_is_favorite_24)

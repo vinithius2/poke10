@@ -1,11 +1,13 @@
 package com.example.pokedex
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -13,6 +15,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +34,8 @@ class PokemonDetailActivity : AppCompatActivity() {
     private lateinit var image_sprite: ImageView
     private lateinit var text_weight: TextView
     private lateinit var text_height: TextView
+    private var pokemon_name = ""
+    private var favorite = false
     private var palette: Palette? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +45,7 @@ class PokemonDetailActivity : AppCompatActivity() {
         supportActionBar?.title = null
         intent.extras?.let { bundle ->
             val url = bundle.getString("url_detail").toString()
+            favorite = bundle.getBoolean("favorite")
             val parse = Uri.parse(url)
             parse.pathSegments.getOrNull(3)?.let {
                 viewModel.getPokemonDetail(it.toInt())
@@ -72,6 +78,7 @@ class PokemonDetailActivity : AppCompatActivity() {
     private fun observerPokemon() {
         viewModel.pokemonDetail.observe(this, { pokemon ->
             supportActionBar?.title = pokemon.name.lowercase().replaceFirstChar(Char::uppercase)
+            pokemon_name = pokemon.name
             val url_image = "https://img.pokemondb.net/artwork/${pokemon.name.lowercase()}.jpg"
             getDominantColor(url_image)
             getPokemonImage(pokemon, url_image)
@@ -155,10 +162,47 @@ class PokemonDetailActivity : AppCompatActivity() {
         })
     }
 
+
+    /**
+     * Adiciona os valores booleanos de favoritar.
+     */
+    private fun setPreferences(name: String, value: Boolean) {
+        val sharedPref = this.getSharedPreferences(PokemonAdapter.FAVORITES, Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean(name, value)
+            commit()
+        }
+    }
+
+    private fun getFavoriteStatus(item: MenuItem) {
+        val is_favorite =
+            ContextCompat.getDrawable(this, R.drawable.ic_baseline_is_favorite_24)
+        val is_not_favorite =
+            ContextCompat.getDrawable(this, R.drawable.ic_baseline_is_not_favorite_24)
+        item.icon = if (favorite) is_favorite else is_not_favorite
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.detail_menu, menu)
+        val item = menu?.findItem(R.id.action_favorite)
+        item?.let {
+            getFavoriteStatus(it)
+            true
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.getItemId()) {
             android.R.id.home -> {
+
                 finish()
+                return true
+            }
+            R.id.action_favorite -> {
+                favorite = !favorite
+                setPreferences(pokemon_name, favorite)
+                getFavoriteStatus(item)
                 return true
             }
             else -> super.onOptionsItemSelected(item)

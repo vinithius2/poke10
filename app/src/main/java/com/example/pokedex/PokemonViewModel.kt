@@ -8,6 +8,7 @@ import com.example.pokedex.api.repository.PokemonRepositoryData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeoutException
 
 class PokemonViewModel(
     private val pokemonRepositoryData: PokemonRepositoryData
@@ -28,7 +29,11 @@ class PokemonViewModel(
     fun getPokemonList(limit: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             _pokemonListLoading.postValue(true)
-            _pokemonList.postValue(pokemonRepositoryData.pokemonList(limit)?.results)
+            try {
+                _pokemonList.postValue(pokemonRepositoryData.pokemonList(limit)?.results)
+            } catch (e: TimeoutException) {
+                _pokemonList.postValue(listOf<Pokemon>())
+            }
             _pokemonListLoading.postValue(false)
         }
     }
