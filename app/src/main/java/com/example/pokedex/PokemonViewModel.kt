@@ -1,5 +1,6 @@
 package com.example.pokedex
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,6 +28,10 @@ class PokemonViewModel(
     val pokemonListLoading: LiveData<Boolean>
         get() = _pokemonListLoading
 
+    private val _pokemonDetailLoading = MutableLiveData<Boolean>()
+    val pokemonDetailLoading: LiveData<Boolean>
+        get() = _pokemonDetailLoading
+
     private val _pokemonError = MutableLiveData<Boolean>()
     val pokemonError: LiveData<Boolean>
         get() = _pokemonError
@@ -46,22 +51,31 @@ class PokemonViewModel(
 
     fun getPokemonDetail(id: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            _pokemonListLoading.postValue(true)
+            _pokemonDetailLoading.postValue(true)
             try {
                 val pokemon = pokemonRepositoryData.pokemonDetail(id)
                 pokemon?.let {
-                    pokemonRepositoryData.pokemonEncounters(id)?.let { location_list ->
-                        it.apply { encounters = location_list }
+                    pokemonRepositoryData.pokemonEncounters(id)?.let { api_location_list ->
+                        it.apply { encounters = api_location_list }
                     }
-                    pokemonRepositoryData.pokemonEvolution(id)?.let { evolution_chain ->
-                        it.apply { evolution = evolution_chain }
+                    pokemonRepositoryData.pokemonCharacteristic(id)?.let { api_characteristic ->
+                        it.apply { characteristic = api_characteristic }
+                    }
+                    pokemonRepositoryData.pokemonSpecies(id)?.let { api_specie ->
+                        it.apply { specie = api_specie }
+                        val parse = Uri.parse(api_specie.evolution_chain.url)
+                        parse.pathSegments.getOrNull(3)?.let { specie_id ->
+                            pokemonRepositoryData.pokemonEvolution(specie_id.toInt())?.let { api_evolution ->
+                                it.apply { evolution = api_evolution }
+                            }
+                        }
                     }
                 }
                 _pokemonDetail.postValue(pokemon)
             } catch (e: SocketTimeoutException) {
                 _pokemonError.postValue(true)
             }
-            _pokemonListLoading.postValue(false)
+            _pokemonDetailLoading.postValue(false)
         }
     }
 

@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(R.drawable.pokemon_logo_small)
         observerPokemonLoading()
         observerPokemonList()
         with(viewModel) {
@@ -95,10 +98,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                onCallBackClickDetail = { url, favorite ->
+                onCallBackClickDetail = { url ->
                     val bundle = Bundle()
                     bundle.putString("url_detail", url)
-                    bundle.putBoolean("favorite", favorite)
                     val intent = Intent(this@MainActivity, PokemonDetailActivity::class.java)
                     intent.putExtras(bundle)
                     startActivity(intent)

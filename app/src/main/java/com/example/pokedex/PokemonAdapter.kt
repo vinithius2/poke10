@@ -23,7 +23,7 @@ class PokemonAdapter(
 
     var onCallBackDataSetFilterSize: ((size: Int) -> Unit)? = null
     var onCallBackDataSetFilterRemove: ((size: Int, position: Int) -> Unit)? = null
-    var onCallBackClickDetail: ((url: String, favorites_filter: Boolean) -> Unit)? = null
+    var onCallBackClickDetail: ((url: String) -> Unit)? = null
 
     private var char_sequence: CharSequence = ""
     private var favorites_filter = false
@@ -79,8 +79,9 @@ class PokemonAdapter(
      */
     private fun detail(url: String?, name: String, holder: PokemonViewHolder) {
         holder.layout_data.setOnClickListener {
-            val favorite = getIsFavorite(name)
-            url?.let { url -> onCallBackClickDetail?.invoke(url, favorite) }
+//            val favorite = getIsFavorite(name)
+            url?.let { url -> onCallBackClickDetail?.invoke(url) }
+//            url?.let { url -> onCallBackClickDetail?.invoke(url, favorite) }
         }
     }
 

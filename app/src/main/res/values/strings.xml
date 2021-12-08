@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name">Pokedex</string>
+    <string name="app_name">Poké10</string>
     <string name="there_are_no_items_in_the_search_title">Não existe itens na busca!</string>
     <string name="there_are_no_items_in_the_search_subtitle">Refaça a busca com um nome válido.</string>
     <string name="search">Search</string>
     <string name="unknow">\?</string>
+    <string name="unhidden">Desoculto</string>
+    <string name="hidden">Oculto</string>
     <string name="more_menu">Mais menu</string>
     <string name="favorite_pokemon_is_empty_title">Não há pokemons favoritos!</string>
     <string name="favorite_pokemon_is_empty_subtitle">É necessário favoritar algum pokemon, para voltar, clique no ícone de coração.</string>
     <string name="base_exp">Base Exp:</string>
+    <string name="generation">Generation</string>
 </resources>

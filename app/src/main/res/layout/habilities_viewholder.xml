@@ -2,44 +2,75 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginVertical="4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/layout_abilities"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/background_habilities"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="4dp"
-        android:background="@drawable/background_habilities"
+        android:paddingVertical="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/text_abilitie"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginEnd="2dp"
-            android:text="@string/unknow"
-            android:textColor="@color/white"
-            android:textAlignment="center"
             android:inputType="textCapSentences"
+            android:text="@string/unknow"
+            android:textAlignment="center"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            tools:text="Overgrow"
+            app:layout_constraintLeft_toLeftOf="@+id/layout_abilities"
+            app:layout_constraintRight_toRightOf="@+id/layout_abilities"
+            tools:ignore="TextViewEdits"
+            tools:text="Overgrow" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_abilities_hidden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_habilities_hidden"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_abilities"
+        app:layout_constraintRight_toRightOf="@+id/layout_abilities"
+        app:layout_constraintTop_toTopOf="@+id/layout_abilities"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/text_abilitie_hidden_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:inputType="textCapSentences"
+            android:text="@string/hidden"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@+id/layout_abilities_hidden"
+            app:layout_constraintRight_toRightOf="@+id/layout_abilities_hidden"
             tools:ignore="TextViewEdits" />
 
         <ImageView
-            android:id="@+id/image_abilitie"
+            android:id="@+id/image_status_visibility_abilitie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
-            android:background="@drawable/ic_baseline_visibility_on_24"
+            android:background="@drawable/ic_baseline_visibility_off_24"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>

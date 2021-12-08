@@ -21,4 +21,10 @@ interface PokemonRepository {
     @GET("pokemon/{id}/encounters")
     suspend fun getPokemonEncounters(@Path("id") id: Int) : Response<List<Location>>
 
+    @GET("characteristic/{id}")
+    suspend fun getPokemonCharacteristic(@Path("id") id: Int) : Response<Characteristic>
+
+    @GET("pokemon-species/{id}")
+    suspend fun getPokemonSpecies(@Path("id") id: Int) : Response<Specie>
+
 }

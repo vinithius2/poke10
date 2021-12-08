@@ -1,7 +1,7 @@
 package com.example.pokedex.api.data
 
-data class EvolutionChain (
+data class EvolutionChain(
     val chain: Chain,
-    val baby_trigger_item: Boolean,
+    val baby_trigger_item: Default?,
     val id: Int
 )
