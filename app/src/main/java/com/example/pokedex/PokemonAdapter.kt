@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.api.data.Pokemon
+import com.example.pokedex.databinding.PokemonViewholderBinding
 import com.squareup.picasso.Picasso
 
 
@@ -28,21 +30,29 @@ class PokemonAdapter(
     private var char_sequence: CharSequence = ""
     private var favorites_filter = false
     private lateinit var view: View
+    private lateinit var binding: PokemonViewholderBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonViewHolder {
-        view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.pokemon_viewholder, parent, false)
-        return PokemonViewHolder(view)
+        binding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.pokemon_viewholder,
+            parent,
+            false
+        )
+        view = binding.root
+        return PokemonViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
-        val name = dataSetFilter[position].name
-        holder.textView.text = name.lowercase().replaceFirstChar(Char::uppercase)
-        setImage(name, holder)
-        detail(dataSetFilter[position].url, name, holder)
-        getStatusImagePokeball(name, holder)
-        clickPokeball(name, position, dataSetFilter[position], holder)
+        holder.bind(
+            position,
+            dataSetFilter[position],
+            onCallBackClickDetail,
+            ::clickPokeball
+        )
     }
+
+    override fun getItemCount() = dataSetFilter.size
 
     /**
      * Pega se o pokemon é favorito ou não, caso nulo, retorna falso.
@@ -64,78 +74,36 @@ class PokemonAdapter(
     }
 
     /**
-     * Adiciona a imagem do pokemon da fonte "img.pokemondb" em cada item da lista.
-     */
-    private fun setImage(name: String, holder: PokemonViewHolder) {
-        val url_image = "https://img.pokemondb.net/artwork/${name.lowercase()}.jpg"
-        Picasso.get()
-            .load(url_image)
-            .error(R.drawable.ic_error_image)
-            .into(holder.image_pokemon)
-    }
-
-    /**
-     * Chamada para a tela de detalhes do Pokemon.
-     */
-    private fun detail(url: String?, name: String, holder: PokemonViewHolder) {
-        holder.layout_data.setOnClickListener {
-//            val favorite = getIsFavorite(name)
-            url?.let { url -> onCallBackClickDetail?.invoke(url) }
-//            url?.let { url -> onCallBackClickDetail?.invoke(url, favorite) }
-        }
-    }
-
-    /**
-     * Clica no pokebola para adicionar como favorito ou não.
+     * Callback de click na pokebola para adicionar como favorito ou não.
      */
     private fun clickPokeball(
-        name: String,
         position: Int,
-        pokemon: Pokemon,
-        holder: PokemonViewHolder
+        pokemon: Pokemon
     ) {
-        holder.layout_pokeball.setOnClickListener {
-            val is_favorite = getIsFavorite(name)
-            if (is_favorite) {
-                setPreferences(name, false)
-                setAnimation(R.drawable.animation_click_off, holder)
-                if (favorites_filter) {
-                    dataSetFilter.remove(pokemon)
-                    onCallBackDataSetFilterRemove?.invoke(dataSetFilter.size, position)
-                }
-            } else {
-                setPreferences(name, true)
-                setAnimation(R.drawable.animation_click_on, holder)
+        val is_favorite = getIsFavorite(pokemon.name)
+        if (is_favorite) {
+            setPreferences(pokemon.name, false)
+            setAnimation(R.drawable.animation_click_off)
+            if (favorites_filter) {
+                dataSetFilter.remove(pokemon)
+                onCallBackDataSetFilterRemove?.invoke(dataSetFilter.size, position)
             }
+        } else {
+            setPreferences(pokemon.name, true)
+            setAnimation(R.drawable.animation_click_on)
         }
     }
 
     /**
      * Faz a animação da Pokebola abrindo ou fechando.
      */
-    private fun setAnimation(id_click: Int, holder: PokemonViewHolder) {
-        holder.image_pokeball.background =
+    private fun setAnimation(id_click: Int) {
+        binding.imagePokeball.background =
             ContextCompat.getDrawable(view.context, id_click)
         val frameAnimation: AnimationDrawable =
-            holder.image_pokeball.background as AnimationDrawable
+            binding.imagePokeball.background as AnimationDrawable
         frameAnimation.start()
     }
-
-    /**
-     * Muda a imagem da pokebola do item de acordo com o status de favoritos.
-     */
-    private fun getStatusImagePokeball(name: String, holder: PokemonViewHolder) {
-        val is_favorite = getIsFavorite(name)
-        if (is_favorite) {
-            holder.image_pokeball.background =
-                ContextCompat.getDrawable(view.context, R.drawable.pokeball_01)
-        } else {
-            holder.image_pokeball.background =
-                ContextCompat.getDrawable(view.context, R.drawable.pokeball_03_gray)
-        }
-    }
-
-    override fun getItemCount() = dataSetFilter.size
 
     /**
      * Retorna a lista de favoritos

@@ -1,19 +1,20 @@
 package com.example.pokedex
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokedex.databinding.ActivityMainBinding
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
@@ -22,11 +23,11 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: PokemonViewModel by viewModel()
     private var favorites_filter = false
     private lateinit var pokemonAdapter: PokemonAdapter
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(R.drawable.pokemon_logo_small)
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
      * Notifica o adapter todas vez que voltar da tela de detalhes, pois pode haver mudanças no status
      * de favoritos.
      */
+    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         if (::pokemonAdapter.isInitialized) {
             pokemonAdapter.notifyDataSetChanged()
@@ -50,63 +52,55 @@ class MainActivity : AppCompatActivity() {
 
     private fun observerPokemonLoading() {
         viewModel.pokemonListLoading.observe(this, { loading ->
-            val loading_list_pokemon = findViewById<ProgressBar>(R.id.loading_list_pokemon)
             if (loading) {
-                loading_list_pokemon.visibility = View.VISIBLE
+                binding.loadingListPokemon.visibility = View.VISIBLE
             } else {
-                loading_list_pokemon.visibility = View.INVISIBLE
+                binding.loadingListPokemon.visibility = View.INVISIBLE
             }
         })
     }
 
     private fun observerPokemonList() {
-        recyclerView = findViewById(R.id.recycler_view_pokemon)
         val layoutManager = LinearLayoutManager(applicationContext)
-        recyclerView.layoutManager = layoutManager
-
-        val layout_sem_itens_na_busca = findViewById<LinearLayout>(R.id.layout_sem_itens_na_busca)
-        val msg_empty_title = findViewById<TextView>(R.id.msg_empty_title)
-        val msg_empty_subtitle = findViewById<TextView>(R.id.msg_empty_subtitle)
-        val image_itens_empty = findViewById<ImageView>(R.id.sem_itens_na_busca)
-
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        binding.recyclerViewPokemon.layoutManager = layoutManager
         viewModel.pokemonList.observe(this, { pokemonList ->
             pokemonAdapter = PokemonAdapter(pokemonList).apply {
-                onCallBackDataSetFilterRemove = { size, position ->
-                    notifyItemRemoved(position)
-                    notifyItemRangeChanged(position, size)
-                    if (size == 0) {
-                        layout_sem_itens_na_busca.visibility = View.VISIBLE
-                        msgFavoriteIsEmpty(msg_empty_title, msg_empty_subtitle, image_itens_empty)
-                    } else {
-                        layout_sem_itens_na_busca.visibility = View.INVISIBLE
-                    }
-                }
-                onCallBackDataSetFilterSize = { size ->
-                    notifyDataSetChanged()
-                    if (size > 0) {
-                        layout_sem_itens_na_busca.visibility = View.INVISIBLE
-                    } else {
-                        layout_sem_itens_na_busca.visibility = View.VISIBLE
-                        if (favorites_filter) {
-                            msgFavoriteIsEmpty(
-                                msg_empty_title,
-                                msg_empty_subtitle,
-                                image_itens_empty
-                            )
+                with(binding) {
+
+                    onCallBackDataSetFilterRemove = { size, position ->
+                        notifyItemRemoved(position)
+                        notifyItemRangeChanged(position, size)
+                        if (size == 0) {
+                            layoutSemItensNaBusca.visibility = View.VISIBLE
+                            msgFavoriteIsEmpty(msgEmptyTitle, msgEmptySubtitle, semItensNaBusca)
                         } else {
-                            msgFilterIsEmpty(msg_empty_title, msg_empty_subtitle, image_itens_empty)
+                            layoutSemItensNaBusca.visibility = View.INVISIBLE
                         }
                     }
+
+                    onCallBackDataSetFilterSize = { size ->
+                        notifyDataSetChanged()
+                        if (size > 0) {
+                            layoutSemItensNaBusca.visibility = View.INVISIBLE
+                        } else {
+                            layoutSemItensNaBusca.visibility = View.VISIBLE
+                            msgFavoriteIsEmpty(msgEmptyTitle, msgEmptySubtitle, semItensNaBusca)
+                        }
+                    }
+
+                    onCallBackClickDetail = { url ->
+                        val bundle = Bundle()
+                        bundle.putString("url_detail", url)
+                        val intent = Intent(this@MainActivity, PokemonDetailActivity::class.java)
+                        intent.putExtras(bundle)
+                        startActivity(intent)
+                    }
+
                 }
-                onCallBackClickDetail = { url ->
-                    val bundle = Bundle()
-                    bundle.putString("url_detail", url)
-                    val intent = Intent(this@MainActivity, PokemonDetailActivity::class.java)
-                    intent.putExtras(bundle)
-                    startActivity(intent)
-                }
+
             }
-            recyclerView.adapter = pokemonAdapter
+            binding.recyclerViewPokemon.adapter = pokemonAdapter
         })
     }
 

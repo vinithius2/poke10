@@ -18,6 +18,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,7 @@ import com.db.williamchart.view.HorizontalBarChartView
 import com.example.pokedex.api.data.Chain
 import com.example.pokedex.api.data.EvolutionChain
 import com.example.pokedex.api.data.Pokemon
+import com.example.pokedex.databinding.ActivityPokemonDetailBinding
 import com.squareup.picasso.Picasso
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -33,24 +35,8 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class PokemonDetailActivity : AppCompatActivity() {
 
     private val viewModel: PokemonViewModel by viewModel()
-    private lateinit var pokemonTypeAdapter: PokemonTypeAdapter
-    private lateinit var pokemonAbilitiesAdapter: PokemonAbilitiesAdapter
-    private lateinit var pokemonEvolutionAdapter: PokemonEvolutionAdapter
-    private lateinit var recyclerViewType: RecyclerView
-    private lateinit var recyclerViewAbilitie: RecyclerView
-    private lateinit var recyclerViewEvolution: RecyclerView
-    private lateinit var image_pokemon: ImageView
-    private lateinit var image_sprite: ImageView
-    private lateinit var image_mythical: ImageView
-    private lateinit var image_legendary: ImageView
-    private lateinit var text_weight: TextView
-    private lateinit var text_height: TextView
-    private lateinit var text_base_value: TextView
-    private lateinit var text_description: TextView
-    private lateinit var text_generation_value: TextView
-    private lateinit var loading_detail_pokemon: ProgressBar
-    private lateinit var scroll_detail_pokemon: ScrollView
     private lateinit var optionsMenu: Menu
+    private lateinit var binding: ActivityPokemonDetailBinding
     private var light: Palette.Swatch? = null
     private var dominant: Palette.Swatch? = null
     private var dark: Palette.Swatch? = null
@@ -60,7 +46,7 @@ class PokemonDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pokemon_detail)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_pokemon_detail)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = null
         intent.extras?.let { bundle ->
@@ -70,17 +56,6 @@ class PokemonDetailActivity : AppCompatActivity() {
                 viewModel.getPokemonDetail(it.toInt())
             }
         }
-        scroll_detail_pokemon = findViewById(R.id.scroll_detail_pokemon)
-        loading_detail_pokemon = findViewById(R.id.loading_detail_pokemon)
-        image_pokemon = findViewById(R.id.image_pokemon)
-        image_sprite = findViewById(R.id.image_sprite)
-        image_mythical = findViewById(R.id.image_mythical)
-        image_legendary = findViewById(R.id.image_legendary)
-        text_height = findViewById(R.id.text_height)
-        text_weight = findViewById(R.id.text_weight)
-        text_base_value = findViewById(R.id.text_base_value)
-        text_description = findViewById(R.id.text_description)
-        text_generation_value = findViewById(R.id.text_generation_value)
         observerPokemonLoading()
         observerPokemon()
     }
@@ -92,12 +67,14 @@ class PokemonDetailActivity : AppCompatActivity() {
 
     private fun observerPokemonLoading() {
         viewModel.pokemonDetailLoading.observe(this, { loading ->
-            if (loading) {
-                scroll_detail_pokemon.visibility = View.INVISIBLE
-                loading_detail_pokemon.visibility = View.VISIBLE
-            } else {
-                scroll_detail_pokemon.visibility = View.VISIBLE
-                loading_detail_pokemon.visibility = View.INVISIBLE
+            with(binding) {
+                if (loading) {
+                    scrollDetailPokemon.visibility = View.INVISIBLE
+                    loadingDetailPokemon.visibility = View.VISIBLE
+                } else {
+                    scrollDetailPokemon.visibility = View.VISIBLE
+                    loadingDetailPokemon.visibility = View.INVISIBLE
+                }
             }
         })
     }
@@ -121,23 +98,28 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun getTexts(pokemon: Pokemon) {
-        text_height.text = pokemon.height.toString()
-        text_weight.text = pokemon.weight.toString()
-        text_base_value.text = pokemon.base_experience.toString()
-        pokemon.characteristic?.let {
-            val description = it.descriptions.filter { it.language.name == "en" }.map { it.description }
-            if (description.isNotEmpty()) {
-                text_description.text = description.first()
+        with(binding) {
+            textHeight.text = pokemon.height.toString()
+            textWeight.text = pokemon.weight.toString()
+            textBaseValue.text = pokemon.base_experience.toString()
+            pokemon.characteristic?.let {
+                val description =
+                    it.descriptions.filter { it.language.name == "en" }.map { it.description }
+                if (description.isNotEmpty()) {
+                    textDescription.text = description.first()
+                }
             }
+            textGenerationValue.text = pokemon.specie.generation.name.split("-").last().uppercase()
         }
-        text_generation_value.text = pokemon.specie.generation.name.split("-").last().uppercase()
 
         //TODO: Adequar esse de baixo
         pokemon.specie.shape.name
         pokemon.specie.capture_rate
         pokemon.specie.habitat?.name
         pokemon.specie.is_baby
-        pokemon.encounters.map { it.location_area.name.replace("-", " ").lowercase().replaceFirstChar(Char::uppercase) }
+        pokemon.encounters.map {
+            it.location_area.name.replace("-", " ").lowercase().replaceFirstChar(Char::uppercase)
+        }
         pokemon.specie.egg_groups.map { it.name.lowercase().replaceFirstChar(Char::uppercase) }
 
     }
@@ -164,48 +146,56 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun getTypes(pokemon: Pokemon) {
-        recyclerViewType = findViewById(R.id.recycler_view_pokemon_type)
-        val layoutManager = GridLayoutManager(applicationContext, 2)
-        recyclerViewType.layoutManager = layoutManager
-        pokemon.types?.let {
-            pokemonTypeAdapter = PokemonTypeAdapter(it)
-            recyclerViewType.adapter = pokemonTypeAdapter
+        with(binding) {
+            val layoutManager = GridLayoutManager(applicationContext, 2)
+            recyclerViewPokemonType.layoutManager = layoutManager
+            pokemon.types?.let {
+                recyclerViewPokemonType.adapter = PokemonTypeAdapter(it)
+            }
         }
     }
 
     private fun getAbilities(pokemon: Pokemon) {
-        recyclerViewAbilitie = findViewById(R.id.recycler_view_pokemon_abilities)
-        val layoutManager = LinearLayoutManager(applicationContext)
-        recyclerViewAbilitie.layoutManager = layoutManager
-        pokemon.abilities?.let {
-            pokemonAbilitiesAdapter = PokemonAbilitiesAdapter(it, dark, dominant)
-            recyclerViewAbilitie.adapter = pokemonAbilitiesAdapter
+        with(binding) {
+            val layoutManager = LinearLayoutManager(applicationContext)
+            recyclerViewPokemonAbilities.layoutManager = layoutManager
+            pokemon.abilities?.let {
+                recyclerViewPokemonAbilities.adapter = PokemonAbilitiesAdapter(it, dark, dominant)
+            }
         }
     }
 
     private fun getEvolutions(pokemon: Pokemon) {
-        recyclerViewEvolution = findViewById(R.id.recycler_view_pokemon_evolutions)
-        val layoutManager =
-            LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewEvolution.layoutManager = layoutManager
-        pokemon.evolution.let {
-            val list_evolutions = getListEvolutions(it)
-            pokemonEvolutionAdapter = PokemonEvolutionAdapter(list_evolutions)
-            recyclerViewEvolution.adapter = pokemonEvolutionAdapter.apply {
-                onCallBackClickDetail = { url ->
-                    val bundle = Bundle()
-                    bundle.putString("url_detail", url)
-                    val intent = Intent(this@PokemonDetailActivity, PokemonDetailActivity::class.java)
-                    intent.putExtras(bundle)
-                    startActivity(intent)
-                }
+        with(binding) {
+            val layoutManager =
+                LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+            recyclerViewPokemonEvolutions.layoutManager = layoutManager
+            pokemon.evolution.let {
+                recyclerViewPokemonEvolutions.adapter =
+                    PokemonEvolutionAdapter(getListEvolutions(it)).apply {
+                        onCallBackClickDetail = { url ->
+                            val bundle = Bundle()
+                            bundle.putString("url_detail", url)
+                            val intent =
+                                Intent(
+                                    this@PokemonDetailActivity,
+                                    PokemonDetailActivity::class.java
+                                )
+                            intent.putExtras(bundle)
+                            startActivity(intent)
+                        }
+                    }
             }
         }
     }
 
     private fun getIconsMythicalAndLegendary(pokemon: Pokemon) {
-        image_mythical.visibility = if (pokemon.specie.is_mythical) View.VISIBLE else View.INVISIBLE
-        image_legendary.visibility = if (pokemon.specie.is_legendary) View.VISIBLE else View.INVISIBLE
+        with(binding) {
+            imageMythical.visibility =
+                if (pokemon.specie.is_mythical) View.VISIBLE else View.INVISIBLE
+            imageLegendary.visibility =
+                if (pokemon.specie.is_legendary) View.VISIBLE else View.INVISIBLE
+        }
     }
 
     private fun getListEvolutions(evolution: EvolutionChain): MutableList<Pair<String, String>> {
@@ -240,10 +230,10 @@ class PokemonDetailActivity : AppCompatActivity() {
         Picasso.get()
             .load(url_image)
             .error(R.drawable.ic_error_image)
-            .into(image_pokemon)
+            .into(binding.imagePokemon)
         Picasso.get()
             .load(pokemon.sprites.front_default)
-            .into(image_sprite)
+            .into(binding.imageSprite)
     }
 
     private fun getDominantColor(url: String) {
@@ -290,7 +280,8 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun getPreferences(name: String) {
-        val sharedPreferences = this.getSharedPreferences(PokemonAdapter.FAVORITES, Context.MODE_PRIVATE)
+        val sharedPreferences =
+            this.getSharedPreferences(PokemonAdapter.FAVORITES, Context.MODE_PRIVATE)
         favorite = sharedPreferences.getBoolean(name, false)
     }
 

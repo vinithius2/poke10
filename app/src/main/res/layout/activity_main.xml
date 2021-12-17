@@ -1,63 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_pokemon"
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/pokemon_viewholder" />
+        tools:context=".MainActivity">
 
-    <ProgressBar
-        android:id="@+id/loading_list_pokemon"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_pokemon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/pokemon_viewholder" />
 
-    <LinearLayout
-        android:id="@+id/layout_sem_itens_na_busca"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        tools:ignore="UseCompoundDrawables">
-
-        <ImageView
-            android:id="@+id/sem_itens_na_busca"
+        <ProgressBar
+            android:id="@+id/loading_list_pokemon"
+            style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/there_are_no_items_in_the_search_title"
-            android:maxWidth="100dp"
-            android:maxHeight="500dp"
-            android:src="@drawable/ic_baseline_assignment_late_24" />
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/msg_empty_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/there_are_no_items_in_the_search_subtitle"
-            app:layout_constraintTop_toBottomOf="@+id/sem_itens_na_busca" />
+        <LinearLayout
+            android:id="@+id/layout_sem_itens_na_busca"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            tools:ignore="UseCompoundDrawables">
 
-        <TextView
-            android:id="@+id/msg_empty_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="italic"
-            android:textSize="10sp"
-            app:layout_constraintTop_toBottomOf="@+id/sem_itens_na_busca" />
+            <ImageView
+                android:id="@+id/sem_itens_na_busca"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/there_are_no_items_in_the_search_title"
+                android:maxWidth="100dp"
+                android:maxHeight="500dp"
+                android:src="@drawable/ic_baseline_assignment_late_24" />
+
+            <TextView
+                android:id="@+id/msg_empty_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/there_are_no_items_in_the_search_subtitle"
+                app:layout_constraintTop_toBottomOf="@+id/sem_itens_na_busca" />
+
+            <TextView
+                android:id="@+id/msg_empty_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="italic"
+                android:textSize="10sp"
+                app:layout_constraintTop_toBottomOf="@+id/sem_itens_na_busca" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
