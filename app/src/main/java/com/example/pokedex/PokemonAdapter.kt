@@ -45,65 +45,12 @@ class PokemonAdapter(
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         holder.bind(
-            position,
             dataSetFilter[position],
-            onCallBackClickDetail,
-            ::clickPokeball
+            onCallBackClickDetail
         )
     }
 
     override fun getItemCount() = dataSetFilter.size
-
-    /**
-     * Pega se o pokemon é favorito ou não, caso nulo, retorna falso.
-     */
-    private fun getIsFavorite(name: String): Boolean {
-        val sharedPref = view.context.getSharedPreferences(FAVORITES, Context.MODE_PRIVATE)
-        return sharedPref.getBoolean(name, false)
-    }
-
-    /**
-     * Adiciona os valores booleanos de favoritar.
-     */
-    private fun setPreferences(name: String, value: Boolean) {
-        val sharedPref = view.context.getSharedPreferences(FAVORITES, Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putBoolean(name, value)
-            commit()
-        }
-    }
-
-    /**
-     * Callback de click na pokebola para adicionar como favorito ou não.
-     */
-    private fun clickPokeball(
-        position: Int,
-        pokemon: Pokemon
-    ) {
-        val is_favorite = getIsFavorite(pokemon.name)
-        if (is_favorite) {
-            setPreferences(pokemon.name, false)
-            setAnimation(R.drawable.animation_click_off)
-            if (favorites_filter) {
-                dataSetFilter.remove(pokemon)
-                onCallBackDataSetFilterRemove?.invoke(dataSetFilter.size, position)
-            }
-        } else {
-            setPreferences(pokemon.name, true)
-            setAnimation(R.drawable.animation_click_on)
-        }
-    }
-
-    /**
-     * Faz a animação da Pokebola abrindo ou fechando.
-     */
-    private fun setAnimation(id_click: Int) {
-        binding.imagePokeball.background =
-            ContextCompat.getDrawable(view.context, id_click)
-        val frameAnimation: AnimationDrawable =
-            binding.imagePokeball.background as AnimationDrawable
-        frameAnimation.start()
-    }
 
     /**
      * Retorna a lista de favoritos
