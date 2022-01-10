@@ -15,6 +15,7 @@
         android:layout_gravity="center"
         android:layout_marginVertical="4dp"
         card_view:cardCornerRadius="8dp"
+        card_view:cardUseCompatPadding="true"
         tools:ignore="MissingConstraints">
 
         <androidx.constraintlayout.widget.ConstraintLayout

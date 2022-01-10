@@ -12,17 +12,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.ScrollView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.db.williamchart.view.HorizontalBarChartView
 import com.example.pokedex.api.data.Chain
 import com.example.pokedex.api.data.EvolutionChain
@@ -49,6 +44,7 @@ class PokemonDetailActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_pokemon_detail)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = null
+        supportActionBar?.hide()
         intent.extras?.let { bundle ->
             val url = bundle.getString("url_detail").toString()
             val parse = Uri.parse(url)
@@ -72,6 +68,7 @@ class PokemonDetailActivity : AppCompatActivity() {
                     scrollDetailPokemon.visibility = View.INVISIBLE
                     loadingDetailPokemon.visibility = View.VISIBLE
                 } else {
+                    supportActionBar?.show()
                     scrollDetailPokemon.visibility = View.VISIBLE
                     loadingDetailPokemon.visibility = View.INVISIBLE
                 }
@@ -98,9 +95,18 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun getTexts(pokemon: Pokemon) {
-        with(binding) {
-            textHeight.text = pokemon.height.toString()
-            textWeight.text = pokemon.weight.toString()
+        with(binding.includeCardPokemonInfoAndImage) {
+
+            // Conversão de metros para libras
+            val weight_kl = pokemon.weight?.toDouble()?.div(10)
+            val weight_lbs = String.format("%.1f", weight_kl?.times(lbs))
+            textWeight.text = "${weight_kl} kg (${weight_lbs} lbs)"
+
+            // Conversão de metros para polegadas
+            val height_m = pokemon.height?.toDouble()?.div(10)
+            val height_inc = String.format("%.2f", height_m?.let { inch * it })
+            textHeight.text = "${height_m} m (${height_inc}″)"
+
             textBaseValue.text = pokemon.base_experience.toString()
             pokemon.characteristic?.let {
                 val description =
@@ -146,7 +152,7 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun getTypes(pokemon: Pokemon) {
-        with(binding) {
+        with(binding.includeCardPokemonInfoAndImage) {
             val layoutManager = GridLayoutManager(applicationContext, 2)
             recyclerViewPokemonType.layoutManager = layoutManager
             pokemon.types?.let {
@@ -173,16 +179,19 @@ class PokemonDetailActivity : AppCompatActivity() {
             pokemon.evolution.let {
                 recyclerViewPokemonEvolutions.adapter =
                     PokemonEvolutionAdapter(getListEvolutions(it)).apply {
-                        onCallBackClickDetail = { url ->
-                            val bundle = Bundle()
-                            bundle.putString("url_detail", url)
-                            val intent =
-                                Intent(
-                                    this@PokemonDetailActivity,
-                                    PokemonDetailActivity::class.java
-                                )
-                            intent.putExtras(bundle)
-                            startActivity(intent)
+                        onCallBackClickDetail = { url, name ->
+                            if (pokemon_name != name) {
+                                val bundle = Bundle()
+                                bundle.putString("url_detail", url)
+                                val intent =
+                                    Intent(
+                                        this@PokemonDetailActivity,
+                                        PokemonDetailActivity::class.java
+                                    )
+                                intent.putExtras(bundle)
+                                startActivity(intent)
+                                finish()
+                            }
                         }
                     }
             }
@@ -190,7 +199,7 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun getIconsMythicalAndLegendary(pokemon: Pokemon) {
-        with(binding) {
+        with(binding.includeCardPokemonInfoAndImage) {
             imageMythical.visibility =
                 if (pokemon.specie.is_mythical) View.VISIBLE else View.INVISIBLE
             imageLegendary.visibility =
@@ -230,10 +239,10 @@ class PokemonDetailActivity : AppCompatActivity() {
         Picasso.get()
             .load(url_image)
             .error(R.drawable.ic_error_image)
-            .into(binding.imagePokemon)
+            .into(binding.includeCardPokemonInfoAndImage.imagePokemon)
         Picasso.get()
             .load(pokemon.sprites.front_default)
-            .into(binding.imageSprite)
+            .into(binding.includeCardPokemonInfoAndImage.imageSprite)
     }
 
     private fun getDominantColor(url: String) {
@@ -316,5 +325,11 @@ class PokemonDetailActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    companion object {
+        const val lbs: Double = 2.20462262
+        const val inch: Double = 39.370
+        const val feet: Double = 3.2808
     }
 }

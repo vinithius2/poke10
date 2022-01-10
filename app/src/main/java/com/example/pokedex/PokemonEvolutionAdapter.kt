@@ -10,7 +10,7 @@ class PokemonEvolutionAdapter(
     val pokemon_evolution: MutableList<Pair<String, String>>
 ) : RecyclerView.Adapter<PokemonEvolutionViewHolder>() {
 
-    var onCallBackClickDetail: ((url: String) -> Unit)? = null
+    var onCallBackClickDetail: ((url: String, name: String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonEvolutionViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -27,7 +27,7 @@ class PokemonEvolutionAdapter(
         }
         holder.card_evolutions.setOnClickListener {
             pokemon_evolution[position]
-            onCallBackClickDetail?.invoke(url)
+            onCallBackClickDetail?.invoke(url, pokemon_evolution[position].first)
         }
     }
 
