@@ -99,17 +99,17 @@ class PokemonDetailActivity : AppCompatActivity() {
         setInfo(pokemon)
         setIsBaby(pokemon)
         setHabitat(pokemon)
+        setEncounters(pokemon)
 
-        // Lista de lugares onde encontrar
-        pokemon.encounters.map {
-            it.location_area.name.replace("-", " ").lowercase().replaceFirstChar(Char::uppercase)
-        }
         // Grupo de ovos
-        pokemon.specie.egg_groups.map { it.name.lowercase().replaceFirstChar(Char::uppercase) } // Grupo que faz parte
+        pokemon.specie.egg_groups.map {
+            it.name.lowercase().replaceFirstChar(Char::uppercase)
+        } // Grupo que faz parte
         // Tipos de danos de ataque e defesa
         pokemon.damage
         // Descrição no final
-        pokemon.specie.flavor_text_entries.filter { it.language.name == "en" }.groupBy { it.flavor_text }
+        pokemon.specie.flavor_text_entries.filter { it.language.name == "en" }
+            .groupBy { it.flavor_text }
     }
 
     private fun setInfo(pokemon: Pokemon) {
@@ -121,7 +121,8 @@ class PokemonDetailActivity : AppCompatActivity() {
             val height_inc = String.format("%.2f", pokemon.height?.convertInch())
             textHeight.text = getString(R.string.m_inch, height_m, height_inc)
             textCaptureRateValue.text = pokemon.specie.capture_rate.toString()
-            textShapeValue.text = pokemon.specie.shape.name.lowercase().replaceFirstChar(Char::uppercase)
+            textShapeValue.text =
+                pokemon.specie.shape.name.lowercase().replaceFirstChar(Char::uppercase)
             textBaseValue.text = pokemon.base_experience.toString()
             pokemon.characteristic?.let {
                 val description =
@@ -141,11 +142,25 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun setHabitat(pokemon: Pokemon) {
-        binding.includeHabitat.textShape.text = pokemon.specie.habitat?.name?.lowercase()?.replaceFirstChar(Char::uppercase)
-        binding.includeHabitat.imageShapeIcoText.background = getDrawable(R.drawable.ic_baseline_house_24)
+        binding.includeHabitat.textShape.text =
+            pokemon.specie.habitat?.name?.capitalize()
+        binding.includeHabitat.imageShapeIcoText.background =
+            getDrawable(R.drawable.ic_baseline_house_24)
         binding.includeHabitat.layoutShapeIco.visibility = View.VISIBLE
         binding.includeHabitat.layoutShape.setColorBackground(dominant)
         binding.includeHabitat.layoutShapeIco.setColorBackground(dark)
+    }
+
+    private fun setEncounters(pokemon: Pokemon) {
+        val encounters = pokemon.encounters.map {
+            it.location_area.name.replace("-", " ").lowercase().replaceFirstChar(Char::uppercase)
+        }
+        with(binding) {
+            val layoutManager = LinearLayoutManager(applicationContext)
+            recyclerViewPokemonEncounters.layoutManager = layoutManager
+            recyclerViewPokemonEncounters.adapter =
+                PokemonEncounterAdapter(encounters, dark, dominant)
+        }
     }
 
     private fun setStats(pokemon: Pokemon) {
