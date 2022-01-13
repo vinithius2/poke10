@@ -4,13 +4,13 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.pokedex.api.data.Damage
 import com.example.pokedex.api.data.Pokemon
 import com.example.pokedex.api.repository.PokemonRepositoryData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
-import java.util.concurrent.TimeoutException
 
 class PokemonViewModel(
     private val pokemonRepositoryData: PokemonRepositoryData
@@ -54,22 +54,35 @@ class PokemonViewModel(
             _pokemonDetailLoading.postValue(true)
             try {
                 val pokemon = pokemonRepositoryData.pokemonDetail(id)
-                pokemon?.let {
+                pokemon?.let { pokemon_obj ->
+
                     pokemonRepositoryData.pokemonEncounters(id)?.let { api_location_list ->
-                        it.apply { encounters = api_location_list }
+                        pokemon.apply { encounters = api_location_list }
                     }
+
                     pokemonRepositoryData.pokemonCharacteristic(id)?.let { api_characteristic ->
-                        it.apply { characteristic = api_characteristic }
+                        pokemon_obj.apply { characteristic = api_characteristic }
                     }
+
                     pokemonRepositoryData.pokemonSpecies(id)?.let { api_specie ->
-                        it.apply { specie = api_specie }
+                        pokemon_obj.apply { specie = api_specie }
                         val parse = Uri.parse(api_specie.evolution_chain.url)
                         parse.pathSegments.getOrNull(3)?.let { specie_id ->
                             pokemonRepositoryData.pokemonEvolution(specie_id.toInt())?.let { api_evolution ->
-                                it.apply { evolution = api_evolution }
+                                pokemon_obj.apply { evolution = api_evolution }
                             }
                         }
                     }
+
+                    val damage_list: MutableList<Damage> = mutableListOf()
+                    pokemon_obj.types?.forEach { type_list ->
+                        pokemonRepositoryData.pokemonDamageRelations(type_list.type.name)?.let {
+                            it.type = type_list.type
+                            damage_list.add(it)
+                        }
+                    }
+                    pokemon_obj.damage = damage_list
+
                 }
                 _pokemonDetail.postValue(pokemon)
             } catch (e: SocketTimeoutException) {

@@ -14,7 +14,6 @@ class PokemonRepositoryData(
         return repository.getPokemonDetail(id).body()
     }
 
-
     suspend fun pokemonEncounters(id: Int): List<Location>? {
         return repository.getPokemonEncounters(id).body()
     }
@@ -29,6 +28,10 @@ class PokemonRepositoryData(
 
     suspend fun pokemonSpecies(id: Int): Specie? {
         return repository.getPokemonSpecies(id).body()
+    }
+
+    suspend fun pokemonDamageRelations(type: String): Damage? {
+        return repository.getPokemonDamageRelations(type).body()
     }
 }
 

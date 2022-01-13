@@ -10,5 +10,11 @@
     <string name="favorite_pokemon_is_empty_title">Não há pokemons favoritos!</string>
     <string name="favorite_pokemon_is_empty_subtitle">É necessário favoritar algum pokemon, para voltar, clique no ícone de coração.</string>
     <string name="base_exp">Base Exp:</string>
-    <string name="generation">Generation</string>
+    <string name="generation">Generation:</string>
+    <string name="kg_lbs">"%1$s kg (%2$s lbs)"</string>
+    <string name="m_inch">"%1$s m (%2$s″)"</string>
+    <string name="shape">Shape:</string>
+    <string name="capture_rate">Capture rate:</string>
+    <string name="is_a_baby">IS A BABY!</string>
+    <string name="habitat">Habitat</string>
 </resources>

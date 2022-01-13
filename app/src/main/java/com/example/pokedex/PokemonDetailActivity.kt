@@ -23,6 +23,7 @@ import com.example.pokedex.api.data.Chain
 import com.example.pokedex.api.data.EvolutionChain
 import com.example.pokedex.api.data.Pokemon
 import com.example.pokedex.databinding.ActivityPokemonDetailBinding
+import com.example.pokedex.extension.*
 import com.squareup.picasso.Picasso
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -85,28 +86,42 @@ class PokemonDetailActivity : AppCompatActivity() {
             val url_image = "https://img.pokemondb.net/artwork/${pokemon.name.lowercase()}.jpg"
             getDominantColor(url_image)
             getPokemonImage(pokemon, url_image)
-            getTexts(pokemon)
-            getStats(pokemon)
-            getTypes(pokemon)
-            getAbilities(pokemon)
-            getEvolutions(pokemon)
-            getIconsMythicalAndLegendary(pokemon)
+            setTexts(pokemon)
+            setStats(pokemon)
+            setTypes(pokemon)
+            setAbilities(pokemon)
+            setEvolutions(pokemon)
+            setIconsMythicalAndLegendary(pokemon)
         })
     }
 
-    private fun getTexts(pokemon: Pokemon) {
+    private fun setTexts(pokemon: Pokemon) {
+        setInfo(pokemon)
+        setIsBaby(pokemon)
+        setHabitat(pokemon)
+
+        // Lista de lugares onde encontrar
+        pokemon.encounters.map {
+            it.location_area.name.replace("-", " ").lowercase().replaceFirstChar(Char::uppercase)
+        }
+        // Grupo de ovos
+        pokemon.specie.egg_groups.map { it.name.lowercase().replaceFirstChar(Char::uppercase) } // Grupo que faz parte
+        // Tipos de danos de ataque e defesa
+        pokemon.damage
+        // Descrição no final
+        pokemon.specie.flavor_text_entries.filter { it.language.name == "en" }.groupBy { it.flavor_text }
+    }
+
+    private fun setInfo(pokemon: Pokemon) {
         with(binding.includeCardPokemonInfoAndImage) {
-
-            // Conversão de metros para libras
-            val weight_kl = pokemon.weight?.toDouble()?.div(10)
-            val weight_lbs = String.format("%.1f", weight_kl?.times(lbs))
-            textWeight.text = "${weight_kl} kg (${weight_lbs} lbs)"
-
-            // Conversão de metros para polegadas
-            val height_m = pokemon.height?.toDouble()?.div(10)
-            val height_inc = String.format("%.2f", height_m?.let { inch * it })
-            textHeight.text = "${height_m} m (${height_inc}″)"
-
+            val weight_kl = String.format("%.1f", pokemon.weight?.converterIntToDouble())
+            val weight_lbs = String.format("%.1f", pokemon.weight?.convertPounds())
+            textWeight.text = getString(R.string.kg_lbs, weight_kl, weight_lbs)
+            val height_m = String.format("%.1f", pokemon.height?.converterIntToDouble())
+            val height_inc = String.format("%.2f", pokemon.height?.convertInch())
+            textHeight.text = getString(R.string.m_inch, height_m, height_inc)
+            textCaptureRateValue.text = pokemon.specie.capture_rate.toString()
+            textShapeValue.text = pokemon.specie.shape.name.lowercase().replaceFirstChar(Char::uppercase)
             textBaseValue.text = pokemon.base_experience.toString()
             pokemon.characteristic?.let {
                 val description =
@@ -117,20 +132,23 @@ class PokemonDetailActivity : AppCompatActivity() {
             }
             textGenerationValue.text = pokemon.specie.generation.name.split("-").last().uppercase()
         }
-
-        //TODO: Adequar esse de baixo
-        pokemon.specie.shape.name
-        pokemon.specie.capture_rate
-        pokemon.specie.habitat?.name
-        pokemon.specie.is_baby
-        pokemon.encounters.map {
-            it.location_area.name.replace("-", " ").lowercase().replaceFirstChar(Char::uppercase)
-        }
-        pokemon.specie.egg_groups.map { it.name.lowercase().replaceFirstChar(Char::uppercase) }
-
     }
 
-    private fun getStats(pokemon: Pokemon) {
+    private fun setIsBaby(pokemon: Pokemon) {
+        if (pokemon.specie.is_baby) {
+            binding.includeCardIsABaby.cardViewIsABaby.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setHabitat(pokemon: Pokemon) {
+        binding.includeHabitat.textShape.text = pokemon.specie.habitat?.name?.lowercase()?.replaceFirstChar(Char::uppercase)
+        binding.includeHabitat.imageShapeIcoText.background = getDrawable(R.drawable.ic_baseline_house_24)
+        binding.includeHabitat.layoutShapeIco.visibility = View.VISIBLE
+        binding.includeHabitat.layoutShape.setColorBackground(dominant)
+        binding.includeHabitat.layoutShapeIco.setColorBackground(dark)
+    }
+
+    private fun setStats(pokemon: Pokemon) {
         val myChart: HorizontalBarChartView = findViewById(R.id.myChart)
         val mySet = mutableSetOf<Pair<String, Float>>()
         pokemon.stats?.forEach { stat ->
@@ -151,7 +169,7 @@ class PokemonDetailActivity : AppCompatActivity() {
         myChart.show(mySet.toList())
     }
 
-    private fun getTypes(pokemon: Pokemon) {
+    private fun setTypes(pokemon: Pokemon) {
         with(binding.includeCardPokemonInfoAndImage) {
             val layoutManager = GridLayoutManager(applicationContext, 2)
             recyclerViewPokemonType.layoutManager = layoutManager
@@ -161,7 +179,7 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAbilities(pokemon: Pokemon) {
+    private fun setAbilities(pokemon: Pokemon) {
         with(binding) {
             val layoutManager = LinearLayoutManager(applicationContext)
             recyclerViewPokemonAbilities.layoutManager = layoutManager
@@ -171,7 +189,7 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun getEvolutions(pokemon: Pokemon) {
+    private fun setEvolutions(pokemon: Pokemon) {
         with(binding) {
             val layoutManager =
                 LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
@@ -198,7 +216,7 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun getIconsMythicalAndLegendary(pokemon: Pokemon) {
+    private fun setIconsMythicalAndLegendary(pokemon: Pokemon) {
         with(binding.includeCardPokemonInfoAndImage) {
             imageMythical.visibility =
                 if (pokemon.specie.is_mythical) View.VISIBLE else View.INVISIBLE
@@ -325,11 +343,5 @@ class PokemonDetailActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    companion object {
-        const val lbs: Double = 2.20462262
-        const val inch: Double = 39.370
-        const val feet: Double = 3.2808
     }
 }

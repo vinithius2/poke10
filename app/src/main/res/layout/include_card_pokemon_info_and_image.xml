@@ -14,11 +14,11 @@
             android:layout_gravity="center"
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="7dp"
-            card_view:cardUseCompatPadding="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            card_view:cardCornerRadius="8dp">
+            card_view:cardCornerRadius="8dp"
+            card_view:cardUseCompatPadding="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_detail_pokemon"
@@ -70,7 +70,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/image_pokemon"
-                    tools:text="64" />
+                    tools:text="Loves to eat" />
 
                 <ImageView
                     android:id="@+id/image_weight"
@@ -94,8 +94,8 @@
                     android:id="@+id/layout_image_weight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginEnd="-18dp"
+                    android:orientation="horizontal"
                     app:layout_constraintRight_toRightOf="@+id/image_pokemon"
                     app:layout_constraintTop_toBottomOf="@+id/text_description">
 
@@ -126,63 +126,95 @@
                     app:layout_constraintTop_toBottomOf="@+id/layout_image_weight"
                     tools:text="123" />
 
-                <LinearLayout
-                    android:id="@+id/layout_generation"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/text_generation_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toTopOf="@+id/layout_base_exp"
-                    app:layout_constraintLeft_toLeftOf="@+id/layout_base_exp"
-                    app:layout_constraintRight_toRightOf="@+id/layout_base_exp"
-                    app:layout_constraintTop_toBottomOf="@+id/text_weight">
+                    android:layout_marginHorizontal="3dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/generation"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_weight" />
 
-                    <TextView
-                        android:id="@+id/text_generation_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="3dp"
-                        android:text="@string/generation"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/text_generation_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="3dp"
-                        tools:text="1" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_base_exp"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/text_generation_value"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toTopOf="@+id/recycler_view_pokemon_type"
-                    app:layout_constraintLeft_toLeftOf="@+id/recycler_view_pokemon_type"
-                    app:layout_constraintRight_toRightOf="@+id/recycler_view_pokemon_type"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_generation">
+                    android:layout_marginHorizontal="3dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_generation_title"
+                    app:layout_constraintLeft_toRightOf="@+id/text_generation_title"
+                    app:layout_constraintTop_toTopOf="@+id/text_generation_title"
+                    tools:text="1" />
 
-                    <TextView
-                        android:id="@+id/text_base_exp_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="3dp"
-                        android:text="@string/base_exp"
-                        android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/text_base_exp_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    android:text="@string/base_exp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_generation_title"
+                    app:layout_constraintRight_toLeftOf="@+id/text_base_value"
+                    app:layout_constraintTop_toTopOf="@+id/text_generation_title" />
 
-                    <TextView
-                        android:id="@+id/text_base_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="3dp"
-                        tools:text="64" />
+                <TextView
+                    android:id="@+id/text_base_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_base_exp_title"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_base_exp_title"
+                    tools:text="64" />
 
-                </LinearLayout>
+                <!-- -->
+
+                <TextView
+                    android:id="@+id/text_shape_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/shape"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_generation_title" />
+
+                <TextView
+                    android:id="@+id/text_shape_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_shape_title"
+                    app:layout_constraintLeft_toRightOf="@+id/text_shape_title"
+                    app:layout_constraintTop_toTopOf="@+id/text_shape_title"
+                    tools:text="Quadruped" />
+
+                <TextView
+                    android:id="@+id/text_capture_rate_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    android:text="@string/capture_rate"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_shape_title"
+                    app:layout_constraintRight_toLeftOf="@+id/text_capture_rate_value"
+                    app:layout_constraintTop_toTopOf="@+id/text_shape_title" />
+
+                <TextView
+                    android:id="@+id/text_capture_rate_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_capture_rate_title"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_capture_rate_title"
+                    tools:text="45" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view_pokemon_type"
@@ -190,7 +222,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_base_exp"
+                    app:layout_constraintTop_toBottomOf="@+id/text_capture_rate_value"
                     tools:itemCount="1"
                     tools:listitem="@layout/type_viewholder" />
 

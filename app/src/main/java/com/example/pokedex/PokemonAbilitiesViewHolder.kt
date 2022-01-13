@@ -1,17 +1,24 @@
 package com.example.pokedex
 
-import android.text.Layout
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokedex.api.data.Abilities
+import com.example.pokedex.databinding.ShapeDefaultViewholderBinding
+import com.example.pokedex.extension.setColorBackground
 
-class PokemonAbilitiesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PokemonAbilitiesViewHolder(val binding: ShapeDefaultViewholderBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
-    val image_status_visibility_abilitie: ImageView = itemView.findViewById(R.id.image_status_visibility_abilitie)
-    val text_abilitie: TextView = itemView.findViewById(R.id.text_abilitie)
-    val text_abilitie_hidden_text: TextView = itemView.findViewById(R.id.text_abilitie_hidden_text)
-    val layout_abilities: View = itemView.findViewById(R.id.layout_abilities)
-    val layout_abilities_hidden: View = itemView.findViewById(R.id.layout_abilities_hidden)
+    fun bind(view: View, ability: Abilities, dominant: Palette.Swatch?, dark: Palette.Swatch?) {
+        val hidden = ability.is_hidden
+        binding.textShape.text = ability.ability.name.lowercase().replaceFirstChar(Char::uppercase)
+        binding.layoutShape.setColorBackground(dominant)
+        if (hidden) {
+            binding.textShapeIcoText.text = view.context.getString(R.string.hidden)
+            binding.layoutShapeIco.setColorBackground(dark)
+            binding.layoutShapeIco.visibility = View.VISIBLE
+        }
+    }
 
 }
