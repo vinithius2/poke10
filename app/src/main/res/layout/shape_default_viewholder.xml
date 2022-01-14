@@ -63,6 +63,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="@+id/layout_abilities_hidden"
                 app:layout_constraintRight_toRightOf="@+id/layout_abilities_hidden"
                 tools:ignore="TextViewEdits" />

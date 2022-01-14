@@ -1,5 +1,6 @@
 package com.example.pokedex
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,16 +9,19 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.ShapeDefaultViewholderBinding
 
-class PokemonEncounterAdapter(
-    val pokemon_encounter_list: List<String>,
+class PokemonCustomAdapter(
+    val item_list: List<String>,
     val dark: Palette.Swatch?,
     val dominant: Palette.Swatch?,
-) : RecyclerView.Adapter<PokemonEncounterViewHolder>() {
+    val drawable: Drawable?,
+    val title_item_right: String?,
+    val hidden_list: List<Boolean>?,
+) : RecyclerView.Adapter<PokemonCustomViewHolder>() {
 
     private lateinit var view: View
     private lateinit var binding: ShapeDefaultViewholderBinding
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonEncounterViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonCustomViewHolder {
         binding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
             R.layout.shape_default_viewholder,
@@ -25,18 +29,22 @@ class PokemonEncounterAdapter(
             false
         )
         view = binding.root
-        return PokemonEncounterViewHolder(binding)
+        return PokemonCustomViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PokemonEncounterViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PokemonCustomViewHolder, position: Int) {
+
+        val hidden: Boolean? = if (hidden_list.isNullOrEmpty()) null else hidden_list[position]
         holder.bind(
-            view,
-            pokemon_encounter_list[position],
+            item_list[position],
             dominant,
-            dark
+            dark,
+            drawable,
+            title_item_right,
+            hidden
         )
     }
 
-    override fun getItemCount() = pokemon_encounter_list.size
+    override fun getItemCount() = item_list.size
 
 }

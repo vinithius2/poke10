@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -31,21 +32,33 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class PokemonDetailActivity : AppCompatActivity() {
 
     private val viewModel: PokemonViewModel by viewModel()
-    private lateinit var optionsMenu: Menu
+    private var optionsMenu: Menu? = null
     private lateinit var binding: ActivityPokemonDetailBinding
     private var light: Palette.Swatch? = null
     private var dominant: Palette.Swatch? = null
     private var dark: Palette.Swatch? = null
     private var pokemon_name = ""
     private var favorite = false
+    private var expand_text_entries = false
     private var palette: Palette? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_pokemon_detail)
+        binding.textEntries.collapse()
+        setConfigActionBar()
+        getExtras()
+        observerPokemonLoading()
+        observerPokemon()
+    }
+
+    private fun setConfigActionBar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = null
         supportActionBar?.hide()
+    }
+
+    private fun getExtras() {
         intent.extras?.let { bundle ->
             val url = bundle.getString("url_detail").toString()
             val parse = Uri.parse(url)
@@ -53,8 +66,6 @@ class PokemonDetailActivity : AppCompatActivity() {
                 viewModel.getPokemonDetail(it.toInt())
             }
         }
-        observerPokemonLoading()
-        observerPokemon()
     }
 
     private fun changeColorToolBar(color: Int) {
@@ -79,37 +90,29 @@ class PokemonDetailActivity : AppCompatActivity() {
 
     private fun observerPokemon() {
         viewModel.pokemonDetail.observe(this, { pokemon ->
-            supportActionBar?.title = pokemon.name.lowercase().replaceFirstChar(Char::uppercase)
+            supportActionBar?.title = pokemon.name.capitalize()
             pokemon_name = pokemon.name
             getPreferences(pokemon_name)
             getFavoriteIconStatus()
-            val url_image = "https://img.pokemondb.net/artwork/${pokemon.name.lowercase()}.jpg"
-            getDominantColor(url_image)
-            getPokemonImage(pokemon, url_image)
-            setTexts(pokemon)
-            setStats(pokemon)
-            setTypes(pokemon)
-            setAbilities(pokemon)
-            setEvolutions(pokemon)
-            setIconsMythicalAndLegendary(pokemon)
+            getDominantColor(pokemon)
+            getPokemonImage(pokemon)
+            setOutputs(pokemon)
         })
     }
 
-    private fun setTexts(pokemon: Pokemon) {
+    private fun setOutputs(pokemon: Pokemon) {
         setInfo(pokemon)
         setIsBaby(pokemon)
         setHabitat(pokemon)
         setEncounters(pokemon)
-
-        // Grupo de ovos
-        pokemon.specie.egg_groups.map {
-            it.name.lowercase().replaceFirstChar(Char::uppercase)
-        } // Grupo que faz parte
-        // Tipos de danos de ataque e defesa
-        pokemon.damage
-        // Descrição no final
-        pokemon.specie.flavor_text_entries.filter { it.language.name == "en" }
-            .groupBy { it.flavor_text }
+        setEggGroups(pokemon)
+        setDamage(pokemon)
+        setTextEntries(pokemon)
+        setStats(pokemon)
+        setTypes(pokemon)
+        setAbilities(pokemon)
+        setEvolutions(pokemon)
+        setIconsMythicalAndLegendary(pokemon)
     }
 
     private fun setInfo(pokemon: Pokemon) {
@@ -121,8 +124,7 @@ class PokemonDetailActivity : AppCompatActivity() {
             val height_inc = String.format("%.2f", pokemon.height?.convertInch())
             textHeight.text = getString(R.string.m_inch, height_m, height_inc)
             textCaptureRateValue.text = pokemon.specie.capture_rate.toString()
-            textShapeValue.text =
-                pokemon.specie.shape.name.lowercase().replaceFirstChar(Char::uppercase)
+            textShapeValue.text = pokemon.specie.shape.name.capitalize()
             textBaseValue.text = pokemon.base_experience.toString()
             pokemon.characteristic?.let {
                 val description =
@@ -142,24 +144,46 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun setHabitat(pokemon: Pokemon) {
-        binding.includeHabitat.textShape.text =
-            pokemon.specie.habitat?.name?.capitalize()
-        binding.includeHabitat.imageShapeIcoText.background =
-            getDrawable(R.drawable.ic_baseline_house_24)
-        binding.includeHabitat.layoutShapeIco.visibility = View.VISIBLE
-        binding.includeHabitat.layoutShape.setColorBackground(dominant)
-        binding.includeHabitat.layoutShapeIco.setColorBackground(dark)
+        pokemon.specie.habitat?.name?.capitalize()?.let {
+            binding.cardHabitat.setData(dark, dominant, listOf(it))
+        }
     }
 
     private fun setEncounters(pokemon: Pokemon) {
         val encounters = pokemon.encounters.map {
-            it.location_area.name.replace("-", " ").lowercase().replaceFirstChar(Char::uppercase)
+            it.location_area.name.replace("-", " ").capitalize()
+        }
+        binding.cardEncounters.setData(dark, dominant, encounters)
+    }
+
+    private fun setEggGroups(pokemon: Pokemon) {
+        val eggs = pokemon.specie.egg_groups.map { it.name.capitalize() }
+        binding.cardEggGroups.setData(dark, dominant, eggs)
+    }
+
+    private fun setDamage(pokemon: Pokemon) {
+        pokemon.damage
+    }
+
+    private fun setTextEntries(pokemon: Pokemon) {
+        val text_entries = pokemon.specie.flavor_text_entries.filter { it.language.name == "en" }
+            .groupBy { it.flavor_text }
+        var text_output = ""
+        for ((text_entrie, version_list) in text_entries) {
+            version_list.forEach {
+                text_output += " <b>${it.version.name.capitalize()}</b> |"
+            }
+            if (text_output.last().toString().equals("|")) {
+                text_output = text_output.dropLast(2)
+            }
+            text_output += "<p>$text_entrie</p>"
         }
         with(binding) {
-            val layoutManager = LinearLayoutManager(applicationContext)
-            recyclerViewPokemonEncounters.layoutManager = layoutManager
-            recyclerViewPokemonEncounters.adapter =
-                PokemonEncounterAdapter(encounters, dark, dominant)
+            textEntries.text = Html.fromHtml(text_output)
+            constraintlayoutTextEntries.setOnClickListener {
+                expand_text_entries =
+                    textEntries.getCollapseAndExpand(expand_text_entries, imageviewArrowEntries)
+            }
         }
     }
 
@@ -195,12 +219,12 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun setAbilities(pokemon: Pokemon) {
-        with(binding) {
-            val layoutManager = LinearLayoutManager(applicationContext)
-            recyclerViewPokemonAbilities.layoutManager = layoutManager
-            pokemon.abilities?.let {
-                recyclerViewPokemonAbilities.adapter = PokemonAbilitiesAdapter(it, dark, dominant)
-            }
+        pokemon.abilities?.let { abilitie ->
+            binding.cardAbilities.setData(
+                dark,
+                dominant,
+                abilitie.map { it.ability.name },
+                abilitie.map { it.is_hidden })
         }
     }
 
@@ -268,7 +292,8 @@ class PokemonDetailActivity : AppCompatActivity() {
         return list_evolutions
     }
 
-    private fun getPokemonImage(pokemon: Pokemon, url_image: String) {
+    private fun getPokemonImage(pokemon: Pokemon) {
+        val url_image = "${URL_IMAGE}${pokemon.name.lowercase()}${TYPE_IMAGE}"
         Picasso.get()
             .load(url_image)
             .error(R.drawable.ic_error_image)
@@ -278,8 +303,9 @@ class PokemonDetailActivity : AppCompatActivity() {
             .into(binding.includeCardPokemonInfoAndImage.imageSprite)
     }
 
-    private fun getDominantColor(url: String) {
-        Picasso.get().load(url).into(object : com.squareup.picasso.Target {
+    private fun getDominantColor(pokemon: Pokemon) {
+        val url_image = "${URL_IMAGE}${pokemon.name.lowercase()}${TYPE_IMAGE}"
+        Picasso.get().load(url_image).into(object : com.squareup.picasso.Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                 bitmap?.let {
                     palette = Palette.from(it).generate()
@@ -328,12 +354,14 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun getFavoriteIconStatus() {
-        val item = optionsMenu.findItem(R.id.action_favorite)
-        val is_favorite =
-            ContextCompat.getDrawable(this, R.drawable.ic_baseline_is_favorite_24)
-        val is_not_favorite =
-            ContextCompat.getDrawable(this, R.drawable.ic_baseline_is_not_favorite_24)
-        item.icon = if (favorite) is_favorite else is_not_favorite
+        optionsMenu?.let {
+            val item = it.findItem(R.id.action_favorite)
+            val is_favorite =
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_is_favorite_24)
+            val is_not_favorite =
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_is_not_favorite_24)
+            item.icon = if (favorite) is_favorite else is_not_favorite
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -358,5 +386,10 @@ class PokemonDetailActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    companion object {
+        const val URL_IMAGE = "https://img.pokemondb.net/artwork/"
+        const val TYPE_IMAGE = ".jpg"
     }
 }

@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">Poké10</string>
-    <string name="there_are_no_items_in_the_search_title">Não existe itens na busca!</string>
-    <string name="there_are_no_items_in_the_search_subtitle">Refaça a busca com um nome válido.</string>
+    <string name="there_are_no_items_in_the_search_title">There are no items in the search!</string>
+    <string name="there_are_no_items_in_the_search_subtitle">Redo the search with a valid name.</string>
     <string name="search">Search</string>
     <string name="unknow">\?</string>
-    <string name="unhidden">Desoculto</string>
-    <string name="hidden">Oculto</string>
-    <string name="more_menu">Mais menu</string>
-    <string name="favorite_pokemon_is_empty_title">Não há pokemons favoritos!</string>
-    <string name="favorite_pokemon_is_empty_subtitle">É necessário favoritar algum pokemon, para voltar, clique no ícone de coração.</string>
+    <string name="unhidden">Unhidden</string>
+    <string name="hidden">Hidden</string>
+    <string name="more_menu">More menu</string>
+    <string name="favorite_pokemon_is_empty_title">There are no favorite pokemons!</string>
+    <string name="favorite_pokemon_is_empty_subtitle">It is necessary to favorite some pokemon, to go back, click on the heart icon.</string>
     <string name="base_exp">Base Exp:</string>
     <string name="generation">Generation:</string>
     <string name="kg_lbs">"%1$s kg (%2$s lbs)"</string>
@@ -17,4 +17,9 @@
     <string name="capture_rate">Capture rate:</string>
     <string name="is_a_baby">IS A BABY!</string>
     <string name="habitat">Habitat</string>
+    <string name="title_habitat">Habitat</string>
+    <string name="title_encounters">Encounters</string>
+    <string name="title_abilities">Abilities</string>
+    <string name="title_text_entries">Registrations</string>
+    <string name="title_egg_groups">Egg Groups</string>
 </resources>

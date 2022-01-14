@@ -3,6 +3,7 @@ package com.example.pokedex
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.api.data.Pokemon
 import com.example.pokedex.databinding.PokemonViewholderBinding
+import com.example.pokedex.extension.capitalize
 import com.squareup.picasso.Picasso
 
 class PokemonViewHolder(val binding: PokemonViewholderBinding) :
@@ -12,7 +13,7 @@ class PokemonViewHolder(val binding: PokemonViewholderBinding) :
         pokemon: Pokemon,
         onCallBackClickDetail: ((url: String) -> Unit)?
     ) {
-        binding.titlePokemon.text = pokemon.name.lowercase().replaceFirstChar(Char::uppercase)
+        binding.titlePokemon.text = pokemon.name.capitalize()
         binding.layoutData.setOnClickListener {
             pokemon.url?.let { url -> onCallBackClickDetail?.invoke(url) }
         }

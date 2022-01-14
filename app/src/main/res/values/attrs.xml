@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CardWithRecyclerViewComponent">
+        <attr name="expand_card" format="boolean" />
+        <attr name="title_card" format="string" />
+        <attr name="title_item_right" format="string" />
+        <attr name="ico_card" format="reference" />
+    </declare-styleable>
+</resources>
