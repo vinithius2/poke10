@@ -10,8 +10,12 @@ class PokemonTypeViewHolder(val binding: TypeViewholderBinding) :
 
     fun bind(type: Type) {
         binding.textType.text = type.type.name
-        val imgUri: Uri = Uri.parse("android.resource://com.example.pokedex/drawable/${type.type.name}")
+        val imgUri: Uri = Uri.parse("${URI_BASE}${type.type.name}")
         binding.imageType.setImageURI(imgUri)
+    }
+
+    companion object {
+        const val URI_BASE = "android.resource://com.example.pokedex/drawable/"
     }
 
 }
