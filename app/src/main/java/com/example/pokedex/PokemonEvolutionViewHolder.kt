@@ -3,6 +3,7 @@ package com.example.pokedex
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.EvolutionViewholderBinding
+import com.example.pokedex.extension.capitalize
 import com.squareup.picasso.Picasso
 
 class PokemonEvolutionViewHolder(val binding: EvolutionViewholderBinding) :
@@ -14,7 +15,7 @@ class PokemonEvolutionViewHolder(val binding: EvolutionViewholderBinding) :
         onCallBackClickDetail: (url: String, name: String) -> Unit
     ) {
         val (name, url) = evolution_list[position]
-        binding.textNamePokemon.text = name
+        binding.textNamePokemon.text = name.capitalize()
         setImage(name)
         if (evolution_list.size == position + 1) {
             binding.arrowEvolution.visibility = View.INVISIBLE

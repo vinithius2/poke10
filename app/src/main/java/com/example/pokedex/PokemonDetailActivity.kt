@@ -123,8 +123,8 @@ class PokemonDetailActivity : AppCompatActivity() {
             val height_m = String.format("%.1f", pokemon.height?.converterIntToDouble())
             val height_inc = String.format("%.2f", pokemon.height?.convertInch())
             textHeight.text = getString(R.string.m_inch, height_m, height_inc)
-            textCaptureRateValue.text = pokemon.specie.capture_rate.toString()
-            textShapeValue.text = pokemon.specie.shape.name.capitalize()
+            textCaptureRateValue.text = pokemon.specie?.capture_rate?.toString() ?: "?"
+            textShapeValue.text = pokemon.specie?.shape?.name?.capitalize() ?: "?"
             textBaseValue.text = pokemon.base_experience.toString()
             pokemon.characteristic?.let {
                 val description =
@@ -133,19 +133,27 @@ class PokemonDetailActivity : AppCompatActivity() {
                     textDescription.text = description.first()
                 }
             }
-            textGenerationValue.text = pokemon.specie.generation.name.split("-").last().uppercase()
+            textGenerationValue.text =
+                pokemon.specie?.generation?.name?.split("-")?.last()?.uppercase() ?: "?"
         }
     }
 
     private fun setIsBaby(pokemon: Pokemon) {
-        if (pokemon.specie.is_baby) {
-            binding.includeCardIsABaby.cardViewIsABaby.visibility = View.VISIBLE
+        pokemon.specie?.let {
+            if (it.is_baby) {
+                binding.includeCardIsABaby.cardViewIsABaby.visibility = View.VISIBLE
+            }
         }
     }
 
     private fun setHabitat(pokemon: Pokemon) {
-        pokemon.specie.habitat?.name?.capitalize()?.let {
-            binding.cardHabitat.setData(dark, dominant, listOf(it))
+        pokemon.specie?.let {
+            with(binding) {
+                cardHabitat.visibility = View.VISIBLE
+                it.habitat?.name?.capitalize()?.let {
+                    cardHabitat.setData(dark, dominant, listOf(it))
+                }
+            }
         }
     }
 
@@ -157,32 +165,45 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun setEggGroups(pokemon: Pokemon) {
-        val eggs = pokemon.specie.egg_groups.map { it.name.capitalize() }
-        binding.cardEggGroups.setData(dark, dominant, eggs)
+        pokemon.specie?.let { specie ->
+            val eggs = specie.egg_groups.map { it.name.capitalize() }
+            binding.cardEggGroups.visibility = View.VISIBLE
+            binding.cardEggGroups.setData(dark, dominant, eggs)
+        }
     }
 
     private fun setDamage(pokemon: Pokemon) {
-        pokemon.damage
+        if (pokemon.damage.isNullOrEmpty()) {
+            binding.recyclerViewPokemonDamage.visibility = View.GONE
+        } else {
+            val layoutManager = LinearLayoutManager(applicationContext)
+            binding.recyclerViewPokemonDamage.layoutManager = layoutManager
+            binding.recyclerViewPokemonDamage.adapter =
+                PokemonDamageAdapter(pokemon.damage)
+        }
     }
 
     private fun setTextEntries(pokemon: Pokemon) {
-        val text_entries = pokemon.specie.flavor_text_entries.filter { it.language.name == "en" }
-            .groupBy { it.flavor_text }
-        var text_output = ""
-        for ((text_entrie, version_list) in text_entries) {
-            version_list.forEach {
-                text_output += " <b>${it.version.name.capitalize()}</b> |"
+        pokemon.specie?.let { specie ->
+            val text_entries = specie.flavor_text_entries.filter { it.language.name == "en" }
+                .groupBy { it.flavor_text }
+            var text_output = ""
+            for ((text_entrie, version_list) in text_entries) {
+                version_list.forEach {
+                    text_output += " <b>${it.version.name.capitalize()}</b> |"
+                }
+                if (text_output.last().toString().equals("|")) {
+                    text_output = text_output.dropLast(2)
+                }
+                text_output += "<p>$text_entrie</p>"
             }
-            if (text_output.last().toString().equals("|")) {
-                text_output = text_output.dropLast(2)
-            }
-            text_output += "<p>$text_entrie</p>"
-        }
-        with(binding) {
-            textEntries.text = Html.fromHtml(text_output)
-            constraintlayoutTextEntries.setOnClickListener {
-                expand_text_entries =
-                    textEntries.getCollapseAndExpand(expand_text_entries, imageviewArrowEntries)
+            with(binding) {
+                textEntries.text = Html.fromHtml(text_output)
+                constraintlayoutTextEntries.visibility = View.VISIBLE
+                constraintlayoutTextEntries.setOnClickListener {
+                    expand_text_entries =
+                        textEntries.getCollapseAndExpand(expand_text_entries, imageviewArrowEntries)
+                }
             }
         }
     }
@@ -212,8 +233,8 @@ class PokemonDetailActivity : AppCompatActivity() {
         with(binding.includeCardPokemonInfoAndImage) {
             val layoutManager = GridLayoutManager(applicationContext, 2)
             recyclerViewPokemonType.layoutManager = layoutManager
-            pokemon.types?.let {
-                recyclerViewPokemonType.adapter = PokemonTypeAdapter(it)
+            pokemon.types?.let { list_type ->
+                recyclerViewPokemonType.adapter = PokemonTypeAdapter(list_type.map { it.type })
             }
         }
     }
@@ -233,7 +254,8 @@ class PokemonDetailActivity : AppCompatActivity() {
             val layoutManager =
                 LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
             recyclerViewPokemonEvolutions.layoutManager = layoutManager
-            pokemon.evolution.let {
+            pokemon.evolution?.let {
+                recyclerViewPokemonEvolutions.visibility = View.VISIBLE
                 recyclerViewPokemonEvolutions.adapter =
                     PokemonEvolutionAdapter(getListEvolutions(it)).apply {
                         onCallBackClickDetail = { url, name ->
@@ -256,11 +278,11 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun setIconsMythicalAndLegendary(pokemon: Pokemon) {
-        with(binding.includeCardPokemonInfoAndImage) {
-            imageMythical.visibility =
-                if (pokemon.specie.is_mythical) View.VISIBLE else View.INVISIBLE
-            imageLegendary.visibility =
-                if (pokemon.specie.is_legendary) View.VISIBLE else View.INVISIBLE
+        pokemon.specie?.let {
+            with(binding.includeCardPokemonInfoAndImage) {
+                imageMythical.visibility = if (it.is_mythical) View.VISIBLE else View.INVISIBLE
+                imageLegendary.visibility = if (it.is_legendary) View.VISIBLE else View.INVISIBLE
+            }
         }
     }
 

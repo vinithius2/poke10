@@ -22,4 +22,13 @@
     <string name="title_abilities">Abilities</string>
     <string name="title_text_entries">Registrations</string>
     <string name="title_egg_groups">Egg Groups</string>
+    <string name="arrow">Arrow</string>
+    <string name="title_damage">%1$s type damage</string>
+    <string name="title_effective_damage_from">Effective damage from</string>
+    <string name="title_effective_damage_to">Effective damage to</string>
+    <string name="title_ineffective_damage_from">Ineffective damage from</string>
+    <string name="title_ineffective_damage_to">Ineffective damage to</string>
+    <string name="title_no_damage_from">No damage from</string>
+    <string name="title_no_damage_to">No damage to</string>
+    <string name="title_stats">Stats</string>
 </resources>

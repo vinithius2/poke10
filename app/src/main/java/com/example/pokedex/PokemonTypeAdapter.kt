@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pokedex.api.data.Type
+import com.example.pokedex.api.data.Default
 import com.example.pokedex.databinding.TypeViewholderBinding
 
 class PokemonTypeAdapter(
-    val pokemon_type_list: List<Type>
+    val pokemon_type_list: List<Default>
 ) : RecyclerView.Adapter<PokemonTypeViewHolder>() {
 
     private lateinit var view: View
