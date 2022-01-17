@@ -55,46 +55,17 @@
                     app:layout_constraintTop_toBottomOf="@+id/card_view_photo"
                     card_view:cardCornerRadius="8dp">
 
-<!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                        android:id="@+id/constraintlayout_stats"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:paddingVertical="8dp"-->
-<!--                        android:visibility="gone"-->
-<!--                        tools:visibility="visible">-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/ico_left_stats"-->
-<!--                            android:layout_width="18dp"-->
-<!--                            android:layout_height="18dp"-->
-<!--                            android:layout_marginEnd="6dp"-->
-<!--                            android:src="@drawable/ic_baseline_bar_chart"-->
-<!--                            app:layout_constraintBottom_toBottomOf="@+id/title_stats"-->
-<!--                            app:layout_constraintRight_toLeftOf="@+id/title_stats"-->
-<!--                            app:layout_constraintTop_toTopOf="@+id/title_stats" />-->
-
-<!--                        <TextView-->
-<!--                            android:id="@+id/title_stats"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_gravity="center_horizontal"-->
-<!--                            android:text="@string/title_stats"-->
-<!--                            app:layout_constraintTop_toTopOf="@+id/constraintlayout_stats"-->
-<!--                            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--                            app:layout_constraintRight_toRightOf="parent" />-->
-
-                        <com.db.williamchart.view.HorizontalBarChartView
-                            android:id="@+id/myChart"
-                            android:layout_width="match_parent"
-                            android:layout_height="250dp"
-                            android:layout_margin="15dp"
-                            app:chart_barsBackgroundColor="@color/gray_95"
-                            app:chart_barsRadius="5dp"
-                            app:chart_labelsSize="12sp"
-                            app:chart_spacing="25dp"
-                            tools:chart_barsColor="@color/teal_200" />
-
-<!--                    </androidx.constraintlayout.widget.ConstraintLayout>-->
+                    <com.db.williamchart.view.HorizontalBarChartView
+                        android:id="@+id/myChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:layout_margin="15dp"
+                        app:chart_barsBackgroundColor="@color/gray_95"
+                        app:chart_barsRadius="5dp"
+                        app:chart_labelsSize="12sp"
+                        app:chart_spacing="25dp"
+                        tools:chart_barsColor="@color/teal_200"
+                        tools:ignore="MissingConstraints" />
 
                 </androidx.cardview.widget.CardView>
 

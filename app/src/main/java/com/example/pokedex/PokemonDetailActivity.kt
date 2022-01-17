@@ -13,6 +13,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -142,6 +143,13 @@ class PokemonDetailActivity : AppCompatActivity() {
         pokemon.specie?.let {
             if (it.is_baby) {
                 binding.includeCardIsABaby.cardViewIsABaby.visibility = View.VISIBLE
+                binding.includeCardIsABaby.cardViewIsABaby.setOnClickListener {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.toast_baby),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -282,6 +290,20 @@ class PokemonDetailActivity : AppCompatActivity() {
             with(binding.includeCardPokemonInfoAndImage) {
                 imageMythical.visibility = if (it.is_mythical) View.VISIBLE else View.INVISIBLE
                 imageLegendary.visibility = if (it.is_legendary) View.VISIBLE else View.INVISIBLE
+                imageMythical.setOnClickListener {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.toast_mythical),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                imageLegendary.setOnClickListener {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.toast_legendary),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }

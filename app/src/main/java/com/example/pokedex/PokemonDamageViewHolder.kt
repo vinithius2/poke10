@@ -51,32 +51,38 @@ class PokemonDamageViewHolder(val binding: DamageViewholderBinding) :
                 setAdapterDefault(
                     damage.effective_damage_from,
                     titleEffectiveDamageFrom,
-                    recyclerEffectiveDamageFrom
+                    recyclerEffectiveDamageFrom,
+                    icoEffectiveDamageFrom
                 )
                 setAdapterDefault(
                     damage.effective_damage_to,
                     titleEffectiveDamageTo,
-                    recyclerEffectiveDamageTo
+                    recyclerEffectiveDamageTo,
+                    icoEffectiveDamageTo
                 )
                 setAdapterDefault(
                     damage.ineffective_damage_from,
                     titleIneffectiveDamageFrom,
-                    recyclerIneffectiveDamageFrom
+                    recyclerIneffectiveDamageFrom,
+                    icoIneffectiveDamageFrom
                 )
                 setAdapterDefault(
                     damage.ineffective_damage_to,
                     titleIneffectiveDamageTo,
-                    recyclerIneffectiveDamageTo
+                    recyclerIneffectiveDamageTo,
+                    icoIneffectiveDamageTo
                 )
                 setAdapterDefault(
                     damage.no_damage_from,
                     titleNoDamageFrom,
-                    recyclerNoDamageFrom
+                    recyclerNoDamageFrom,
+                    icoNoDamageFrom
                 )
                 setAdapterDefault(
                     damage.no_damage_to,
                     titleNoDamageTo,
-                    recyclerNoDamageTo
+                    recyclerNoDamageTo,
+                    icoNoDamageTo
                 )
             }
         }
@@ -85,11 +91,13 @@ class PokemonDamageViewHolder(val binding: DamageViewholderBinding) :
     private fun setAdapterDefault(
         data_list: List<Default>,
         view_title: TextView,
-        recycler: RecyclerView
+        recycler: RecyclerView,
+        ico: ImageView
     ) {
         if (data_list.isNullOrEmpty()) {
             view_title.visibility = View.GONE
             recycler.visibility = View.GONE
+            ico.visibility = View.GONE
         } else {
             val layoutManager = GridLayoutManager(binding.root.context, COUNT_ITENS)
             recycler.layoutManager = layoutManager

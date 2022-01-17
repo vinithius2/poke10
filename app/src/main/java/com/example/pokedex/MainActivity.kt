@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.pokemonList.observe(this, { pokemonList ->
             pokemonAdapter = PokemonAdapter(pokemonList).apply {
                 with(binding) {
-
                     onCallBackDataSetFilterRemove = { size, position ->
                         notifyItemRemoved(position)
                         notifyItemRangeChanged(position, size)
@@ -78,17 +77,19 @@ class MainActivity : AppCompatActivity() {
                             layoutSemItensNaBusca.visibility = View.INVISIBLE
                         }
                     }
-
-                    onCallBackDataSetFilterSize = { size ->
+                    onCallBackDataSetFilterSize = { size, is_favorite ->
                         notifyDataSetChanged()
                         if (size > 0) {
                             layoutSemItensNaBusca.visibility = View.INVISIBLE
                         } else {
                             layoutSemItensNaBusca.visibility = View.VISIBLE
-                            msgFavoriteIsEmpty(msgEmptyTitle, msgEmptySubtitle, semItensNaBusca)
+                            if (is_favorite) {
+                                msgFavoriteIsEmpty(msgEmptyTitle, msgEmptySubtitle, semItensNaBusca)
+                            } else {
+                                msgFilterIsEmpty(msgEmptyTitle, msgEmptySubtitle, semItensNaBusca)
+                            }
                         }
                     }
-
                     onCallBackClickDetail = { url ->
                         val bundle = Bundle()
                         bundle.putString("url_detail", url)
@@ -96,9 +97,7 @@ class MainActivity : AppCompatActivity() {
                         intent.putExtras(bundle)
                         startActivity(intent)
                     }
-
                 }
-
             }
             binding.recyclerViewPokemon.adapter = pokemonAdapter
         })
@@ -129,7 +128,7 @@ class MainActivity : AppCompatActivity() {
     ) {
         title.text = getString(R.string.there_are_no_items_in_the_search_title)
         subtitle.text = getString(R.string.there_are_no_items_in_the_search_subtitle)
-        image_itens_empty.setImageResource(R.drawable.ic_baseline_assignment_late_24)
+        image_itens_empty.setImageResource(R.drawable.pokeball_03_gray)
         image_itens_empty.layoutParams.height = 120
         image_itens_empty.layoutParams.width = 100
     }

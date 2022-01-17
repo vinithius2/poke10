@@ -11,15 +11,25 @@ class PokemonViewHolder(val binding: PokemonViewholderBinding) :
 
     fun bind(
         pokemon: Pokemon,
-        onCallBackClickDetail: ((url: String) -> Unit)?
+        dataSetFilterSize: Int,
+        onCallBackClickDetail: ((url: String) -> Unit)?,
+        callBackRemoveFavorite: ((position: Int) -> Unit)?,
+        favorites_filter: Boolean,
+        position: Int
     ) {
         binding.titlePokemon.text = pokemon.name.capitalize()
         binding.layoutData.setOnClickListener {
             pokemon.url?.let { url -> onCallBackClickDetail?.invoke(url) }
         }
         with(binding.imgPokeball) {
-            setName(pokemon.name)
-            setOnClickListener { clickPokeball() }
+            setData(pokemon.name)
+            setOnClickListener {
+                if (clickPokeball()) {
+                    if (favorites_filter) {
+                        callBackRemoveFavorite?.invoke(position)
+                    }
+                }
+            }
         }
         setImage(pokemon.name)
     }

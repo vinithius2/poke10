@@ -23,7 +23,7 @@ class PokemonAdapter(
     private var dataSetFilter: MutableList<Pokemon> = dataSet.toMutableList()
     private var dataSetFavorites: MutableList<Pokemon> = dataSet.toMutableList()
 
-    var onCallBackDataSetFilterSize: ((size: Int) -> Unit)? = null
+    var onCallBackDataSetFilterSize: ((size: Int, is_favorite: Boolean) -> Unit)? = null
     var onCallBackDataSetFilterRemove: ((size: Int, position: Int) -> Unit)? = null
     var onCallBackClickDetail: ((url: String) -> Unit)? = null
 
@@ -46,8 +46,17 @@ class PokemonAdapter(
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         holder.bind(
             dataSetFilter[position],
-            onCallBackClickDetail
+            dataSetFilter.size,
+            onCallBackClickDetail,
+            ::callBackRemoveFavorite,
+            favorites_filter,
+            position,
         )
+    }
+
+    private fun callBackRemoveFavorite(position: Int) {
+        dataSetFilter.removeAt(position)
+        onCallBackDataSetFilterRemove?.invoke(dataSetFilter.size, position)
     }
 
     override fun getItemCount() = dataSetFilter.size
@@ -78,7 +87,7 @@ class PokemonAdapter(
             dataSetFilter.addAll(dataSetAll)
             getFilter().filter(char_sequence)
         }
-        onCallBackDataSetFilterSize?.invoke(dataSetFilter.size)
+        onCallBackDataSetFilterSize?.invoke(dataSetFilter.size, favorites_filter)
     }
 
     /**
@@ -142,7 +151,7 @@ class PokemonAdapter(
             dataSetFilter.clear()
             filter_results?.values?.let { values ->
                 dataSetFilter.addAll(values as Collection<Pokemon>)
-                onCallBackDataSetFilterSize?.invoke(dataSetFilter.size)
+                onCallBackDataSetFilterSize?.invoke(dataSetFilter.size, favorites_filter)
             }
         }
     }

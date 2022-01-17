@@ -31,4 +31,8 @@
     <string name="title_no_damage_from">No damage from</string>
     <string name="title_no_damage_to">No damage to</string>
     <string name="title_stats">Stats</string>
+    <string name="toast_mythical">This is a Mythical pokemon!</string>
+    <string name="toast_legendary">This is a legendary pokemon!</string>
+    <string name="toast_baby">This is a baby pokemon!</string>
+
 </resources>

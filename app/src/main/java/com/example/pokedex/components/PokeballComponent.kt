@@ -71,15 +71,18 @@ class PokeballComponent(context: Context, attrs: AttributeSet?) : ConstraintLayo
     /**
      * Callback de click na pokebola para adicionar como favorito ou não.
      */
-    fun clickPokeball() {
+    fun clickPokeball(): Boolean {
         val is_favorite = getIsFavorite(pokemon_name)
         setPreferences(pokemon_name, !is_favorite)
         val draw =
             if (is_favorite) R.drawable.animation_click_off else R.drawable.animation_click_on
         setAnimation(draw)
+        return is_favorite
     }
 
-    fun setName(name: String) {
+    fun setData(
+        name: String
+    ) {
         pokemon_name = name
     }
 
