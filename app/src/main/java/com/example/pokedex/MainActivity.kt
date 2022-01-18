@@ -28,11 +28,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(R.drawable.pokemon_logo_small)
+        setConfigActionBar()
         observerPokemonLoading()
         observerPokemonList()
+        observerPokemonTextError()
         with(viewModel) {
             getPokemonList(LIMIT)
         }
@@ -50,12 +49,19 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
     }
 
+    private fun setConfigActionBar() {
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(R.drawable.pokemon_logo_small)
+        supportActionBar?.hide()
+    }
+
     private fun observerPokemonLoading() {
         viewModel.pokemonListLoading.observe(this, { loading ->
             if (loading) {
                 binding.loadingListPokemon.visibility = View.VISIBLE
             } else {
-                binding.loadingListPokemon.visibility = View.INVISIBLE
+                binding.loadingListPokemon.visibility = View.GONE
             }
         })
     }
@@ -65,41 +71,70 @@ class MainActivity : AppCompatActivity() {
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.recyclerViewPokemon.layoutManager = layoutManager
         viewModel.pokemonList.observe(this, { pokemonList ->
-            pokemonAdapter = PokemonAdapter(pokemonList).apply {
-                with(binding) {
-                    onCallBackDataSetFilterRemove = { size, position ->
-                        notifyItemRemoved(position)
-                        notifyItemRangeChanged(position, size)
-                        if (size == 0) {
-                            layoutSemItensNaBusca.visibility = View.VISIBLE
-                            msgFavoriteIsEmpty(msgEmptyTitle, msgEmptySubtitle, semItensNaBusca)
-                        } else {
-                            layoutSemItensNaBusca.visibility = View.INVISIBLE
-                        }
-                    }
-                    onCallBackDataSetFilterSize = { size, is_favorite ->
-                        notifyDataSetChanged()
-                        if (size > 0) {
-                            layoutSemItensNaBusca.visibility = View.INVISIBLE
-                        } else {
-                            layoutSemItensNaBusca.visibility = View.VISIBLE
-                            if (is_favorite) {
+            if (pokemonList.isNotEmpty()) {
+                binding.recyclerViewPokemon.visibility = View.VISIBLE
+                supportActionBar?.show()
+                pokemonAdapter = PokemonAdapter(pokemonList).apply {
+                    with(binding) {
+                        onCallBackDataSetFilterRemove = { size, position ->
+                            notifyItemRemoved(position)
+                            notifyItemRangeChanged(position, size)
+                            if (size == 0) {
+                                layoutSemItensNaBusca.visibility = View.VISIBLE
                                 msgFavoriteIsEmpty(msgEmptyTitle, msgEmptySubtitle, semItensNaBusca)
                             } else {
-                                msgFilterIsEmpty(msgEmptyTitle, msgEmptySubtitle, semItensNaBusca)
+                                layoutSemItensNaBusca.visibility = View.INVISIBLE
                             }
                         }
-                    }
-                    onCallBackClickDetail = { url ->
-                        val bundle = Bundle()
-                        bundle.putString("url_detail", url)
-                        val intent = Intent(this@MainActivity, PokemonDetailActivity::class.java)
-                        intent.putExtras(bundle)
-                        startActivity(intent)
+                        onCallBackDataSetFilterSize = { size, is_favorite ->
+                            notifyDataSetChanged()
+                            if (size > 0) {
+                                layoutSemItensNaBusca.visibility = View.INVISIBLE
+                            } else {
+                                layoutSemItensNaBusca.visibility = View.VISIBLE
+                                if (is_favorite) {
+                                    msgFavoriteIsEmpty(
+                                        msgEmptyTitle,
+                                        msgEmptySubtitle,
+                                        semItensNaBusca
+                                    )
+                                } else {
+                                    msgFilterIsEmpty(
+                                        msgEmptyTitle,
+                                        msgEmptySubtitle,
+                                        semItensNaBusca
+                                    )
+                                }
+                            }
+                        }
+                        onCallBackClickDetail = { url ->
+                            val bundle = Bundle()
+                            bundle.putString("url_detail", url)
+                            val intent =
+                                Intent(this@MainActivity, PokemonDetailActivity::class.java)
+                            intent.putExtras(bundle)
+                            startActivity(intent)
+                        }
                     }
                 }
+                binding.recyclerViewPokemon.adapter = pokemonAdapter
             }
-            binding.recyclerViewPokemon.adapter = pokemonAdapter
+        })
+    }
+
+    private fun observerPokemonTextError() {
+        viewModel.pokemonTextError.observe(this, { id_text_error ->
+            id_text_error?.let {
+                supportActionBar?.hide()
+                binding.layoutError.root.visibility = View.VISIBLE
+                binding.layoutError.textError.text = getString(it)
+                binding.recyclerViewPokemon.visibility = View.GONE
+                binding.loadingListPokemon.visibility = View.GONE
+                binding.layoutError.btnReloading.setOnClickListener {
+                    viewModel.getPokemonList(LIMIT)
+                    binding.layoutError.root.visibility = View.GONE
+                }
+            }
         })
     }
 

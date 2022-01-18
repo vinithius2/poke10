@@ -48,9 +48,10 @@ class PokemonDetailActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_pokemon_detail)
         binding.textEntries.collapse()
         setConfigActionBar()
-        getExtras()
         observerPokemonLoading()
         observerPokemon()
+        observerPokemonTextError()
+        getExtras()
     }
 
     private fun setConfigActionBar() {
@@ -78,12 +79,29 @@ class PokemonDetailActivity : AppCompatActivity() {
         viewModel.pokemonDetailLoading.observe(this, { loading ->
             with(binding) {
                 if (loading) {
-                    scrollDetailPokemon.visibility = View.INVISIBLE
                     loadingDetailPokemon.visibility = View.VISIBLE
                 } else {
-                    supportActionBar?.show()
-                    scrollDetailPokemon.visibility = View.VISIBLE
-                    loadingDetailPokemon.visibility = View.INVISIBLE
+                    loadingDetailPokemon.visibility = View.GONE
+                }
+            }
+        })
+    }
+
+    private fun observerPokemonTextError() {
+        viewModel.pokemonTextError.observe(this, { id_text_error ->
+            id_text_error?.let {
+                supportActionBar?.hide()
+                binding.layoutError.root.visibility = View.VISIBLE
+                binding.layoutError.btnBack.visibility = View.VISIBLE
+                binding.layoutError.textError.text = getString(it)
+                binding.scrollDetailPokemon.visibility = View.GONE
+                binding.loadingDetailPokemon.visibility = View.GONE
+                binding.layoutError.btnReloading.setOnClickListener {
+                    getExtras()
+                    binding.layoutError.root.visibility = View.GONE
+                }
+                binding.layoutError.btnBack.setOnClickListener {
+                    onBackPressed()
                 }
             }
         })
@@ -91,13 +109,17 @@ class PokemonDetailActivity : AppCompatActivity() {
 
     private fun observerPokemon() {
         viewModel.pokemonDetail.observe(this, { pokemon ->
-            supportActionBar?.title = pokemon.name.capitalize()
-            pokemon_name = pokemon.name
-            getPreferences(pokemon_name)
-            getFavoriteIconStatus()
-            getDominantColor(pokemon)
-            getPokemonImage(pokemon)
-            setOutputs(pokemon)
+            pokemon?.let {
+                supportActionBar?.show()
+                binding.scrollDetailPokemon.visibility = View.VISIBLE
+                supportActionBar?.title = pokemon.name.capitalize()
+                pokemon_name = pokemon.name
+                getPreferences(pokemon_name)
+                getFavoriteIconStatus()
+                getDominantColor(pokemon)
+                getPokemonImage(pokemon)
+                setOutputs(pokemon)
+            }
         })
     }
 
@@ -217,7 +239,7 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     private fun setStats(pokemon: Pokemon) {
-        val myChart: HorizontalBarChartView = findViewById(R.id.myChart)
+        val myChart: HorizontalBarChartView = binding.myChart
         val mySet = mutableSetOf<Pair<String, Float>>()
         pokemon.stats?.forEach { stat ->
             mySet.add(
@@ -351,13 +373,12 @@ class PokemonDetailActivity : AppCompatActivity() {
         val url_image = "${URL_IMAGE}${pokemon.name.lowercase()}${TYPE_IMAGE}"
         Picasso.get().load(url_image).into(object : com.squareup.picasso.Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                bitmap?.let {
-                    palette = Palette.from(it).generate()
+                bitmap?.let { bitmap_to_pallete ->
+                    palette = Palette.from(bitmap_to_pallete).generate()
                     palette?.let {
                         light = it.lightVibrantSwatch ?: it.lightMutedSwatch
                         dominant = it.dominantSwatch ?: light
                         dark = it.darkVibrantSwatch ?: it.darkMutedSwatch
-                        val main_layout: View = findViewById(R.id.main_layout)
                         dominant?.let { color ->
                             changeColorToolBar(color.rgb)
                             val hexColorAlpha =
@@ -368,7 +389,7 @@ class PokemonDetailActivity : AppCompatActivity() {
                             val colorDrawableLayoult =
                                 ColorDrawable(Color.parseColor(hexColorAlpha))
                             supportActionBar?.setBackgroundDrawable(colorDrawableActionBar)
-                            main_layout.background = colorDrawableLayoult
+                            binding.mainLayout.background = colorDrawableLayoult
                         }
                     }
                 }

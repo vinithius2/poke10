@@ -34,5 +34,11 @@
     <string name="toast_mythical">This is a Mythical pokemon!</string>
     <string name="toast_legendary">This is a legendary pokemon!</string>
     <string name="toast_baby">This is a baby pokemon!</string>
+    <string name="is_general_error">Oops, there was an error!</string>
+    <string name="is_timeout_error">Request is taking too long!</string>
+    <string name="is_unknownhost_error">No connection, no server!</string>
+    <string name="is_http_error">Server error response!</string>
+    <string name="reloading">Reloading</string>
+    <string name="back">Back</string>
 
 </resources>
