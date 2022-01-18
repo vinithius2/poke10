@@ -21,11 +21,10 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/pokemon_viewholder" />
 
-        <ProgressBar
+        <com.example.pokedex.components.PokemonLoading
             android:id="@+id/loading_list_pokemon"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

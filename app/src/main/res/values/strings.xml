@@ -39,6 +39,7 @@
     <string name="is_unknownhost_error">No connection, no server!</string>
     <string name="is_http_error">Server error response!</string>
     <string name="reloading">Reloading</string>
+    <string name="loading">Loading</string>
     <string name="back">Back</string>
 
 </resources>
