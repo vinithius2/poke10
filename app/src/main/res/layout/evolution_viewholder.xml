@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:paddingStart="6dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="6dp"
         tools:ignore="RtlSymmetry">
 
         <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -33,6 +33,7 @@
                     android:id="@+id/image_pokemon"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:contentDescription="@string/pokemon_evolution"
                     app:layout_constraintLeft_toLeftOf="@+id/layout_evolution_pokemon"
                     app:layout_constraintRight_toRightOf="@+id/layout_evolution_pokemon"
                     app:layout_constraintTop_toTopOf="@+id/layout_evolution_pokemon"
@@ -43,10 +44,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/layout_evolution_pokemon"
                     app:layout_constraintLeft_toLeftOf="@+id/layout_evolution_pokemon"
                     app:layout_constraintRight_toRightOf="@+id/layout_evolution_pokemon"
                     app:layout_constraintTop_toBottomOf="@+id/image_pokemon"
-                    app:layout_constraintBottom_toBottomOf="@+id/layout_evolution_pokemon"
                     tools:text="Pokemon" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -57,11 +58,12 @@
             android:id="@+id/arrow_evolution"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/arrow"
             android:elevation="8dp"
-            android:visibility="visible"
             android:src="@drawable/ic_baseline_arrow_forward_ios_24"
-            app:layout_constraintLeft_toRightOf="@+id/card_evolutions"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/card_evolutions"
+            app:layout_constraintLeft_toRightOf="@+id/card_evolutions"
             app:layout_constraintTop_toTopOf="@+id/card_evolutions"
             app:tint="@color/black" />
 

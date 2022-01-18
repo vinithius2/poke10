@@ -41,5 +41,10 @@
     <string name="reloading">Reloading</string>
     <string name="loading">Loading</string>
     <string name="back">Back</string>
-
+    <string name="ico_left">Ico Left</string>
+    <string name="pikachu_sad">Pikachu Sad</string>
+    <string name="pokemon_evolution">Pokemon evolution</string>
+    <string name="ico_status_damage">Ico status damage</string>
+    <string name="ico_type">Ico type</string>
+    <string name="description">description</string>
 </resources>

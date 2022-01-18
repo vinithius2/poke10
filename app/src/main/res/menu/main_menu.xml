@@ -4,17 +4,15 @@
 
     <item
         android:id="@+id/action_search"
-        android:title="@string/search"
         android:icon="@drawable/ic_baseline_search_24"
-        app:showAsAction="always|collapseActionView"
+        android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-    />
+        app:showAsAction="always|collapseActionView" />
 
     <item
         android:id="@+id/action_favorite"
-        android:title="@string/more_menu"
         android:icon="@drawable/ic_baseline_is_not_favorite_24"
-        app:showAsAction="always|collapseActionView"
-    />
+        android:title="@string/more_menu"
+        app:showAsAction="always|collapseActionView" />
 
 </menu>
