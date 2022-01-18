@@ -35,16 +35,25 @@ class PokemonDamageViewHolder(val binding: DamageViewholderBinding) :
         setAdapters(damage.damage_relations)
     }
 
+    /**
+     * Add drawable damage left ico in ImageView.
+     */
     private fun setIco(damage: Damage, imageType: ImageView) {
         val imgUri: Uri = Uri.parse("${URI_BASE}${damage.type.name}")
         imageType.setImageURI(imgUri)
     }
 
+    /**
+     * Add text damage.
+     */
     private fun setTitle(damage: Damage, textView: TextView) {
         textView.text =
             binding.root.context.getString(R.string.title_damage, damage.type.name.capitalize())
     }
 
+    /**
+     * Set all damage adapters.
+     */
     private fun setAdapters(damage: DamageRelations?) {
         damage?.let {
             with(binding) {
@@ -88,6 +97,9 @@ class PokemonDamageViewHolder(val binding: DamageViewholderBinding) :
         }
     }
 
+    /**
+     * Adapter default for all damage.
+     */
     private fun setAdapterDefault(
         data_list: List<Default>,
         view_title: TextView,

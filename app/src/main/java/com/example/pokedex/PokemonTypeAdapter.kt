@@ -9,7 +9,7 @@ import com.example.pokedex.api.data.Default
 import com.example.pokedex.databinding.TypeViewholderBinding
 
 class PokemonTypeAdapter(
-    val pokemon_type_list: List<Default>
+    private val pokemon_type_list: List<Default>
 ) : RecyclerView.Adapter<PokemonTypeViewHolder>() {
 
     private lateinit var view: View

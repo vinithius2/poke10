@@ -54,12 +54,18 @@ class PokemonDetailActivity : AppCompatActivity() {
         getExtras()
     }
 
+    /**
+     * Config actionbar for add buttom callback, remove title and hide actionbar.
+     */
     private fun setConfigActionBar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = null
         supportActionBar?.hide()
     }
 
+    /**
+     * get URL with pokemon ID, get ID to get request detail.
+     */
     private fun getExtras() {
         intent.extras?.let { bundle ->
             val url = bundle.getString("url_detail").toString()
@@ -70,11 +76,17 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Change the color according to the pokemon's color palette.
+     */
     private fun changeColorToolBar(color: Int) {
         val window: Window = this.getWindow()
         window.statusBarColor = color
     }
 
+    /**
+     * When request start, loading is visible, however, when finish, loading is invisible.
+     */
     private fun observerPokemonLoading() {
         viewModel.pokemonDetailLoading.observe(this, { loading ->
             with(binding) {
@@ -87,6 +99,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * If is error, main layout is hidden and show layout error.
+     */
     private fun observerPokemonTextError() {
         viewModel.pokemonTextError.observe(this, { id_text_error ->
             id_text_error?.let {
@@ -107,6 +122,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Get request pokemon and add informations in screen.
+     */
     private fun observerPokemon() {
         viewModel.pokemonDetail.observe(this, { pokemon ->
             pokemon?.let {
@@ -123,6 +141,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Organize the sets.
+     */
     private fun setOutputs(pokemon: Pokemon) {
         setInfo(pokemon)
         setIsBaby(pokemon)
@@ -138,6 +159,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         setIconsMythicalAndLegendary(pokemon)
     }
 
+    /**
+     * Add information on the main card, such as photo, weight, height, type, etc.
+     */
     private fun setInfo(pokemon: Pokemon) {
         with(binding.includeCardPokemonInfoAndImage) {
             val weight_kl = String.format("%.1f", pokemon.weight?.converterIntToDouble())
@@ -161,6 +185,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Make sure it's a baby type.
+     */
     private fun setIsBaby(pokemon: Pokemon) {
         pokemon.specie?.let {
             if (it.is_baby) {
@@ -176,6 +203,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Check the habitat and add colors from the palette.
+     */
     private fun setHabitat(pokemon: Pokemon) {
         pokemon.specie?.let {
             with(binding) {
@@ -187,6 +217,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Check encounters and add palette colors.
+     */
     private fun setEncounters(pokemon: Pokemon) {
         val encounters = pokemon.encounters.map {
             it.location_area.name.replace("-", " ").capitalize()
@@ -194,6 +227,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         binding.cardEncounters.setData(dark, dominant, encounters)
     }
 
+    /**
+     * Check egg groups and add palette colors.
+     */
     private fun setEggGroups(pokemon: Pokemon) {
         pokemon.specie?.let { specie ->
             val eggs = specie.egg_groups.map { it.name.capitalize() }
@@ -202,6 +238,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Check the damage and populate the adapter.
+     */
     private fun setDamage(pokemon: Pokemon) {
         if (pokemon.damage.isNullOrEmpty()) {
             binding.recyclerViewPokemonDamage.visibility = View.GONE
@@ -213,6 +252,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Check the description text and manipulate the format for HTML, such as BOLD and PARAGRAPH.
+     */
     private fun setTextEntries(pokemon: Pokemon) {
         pokemon.specie?.let { specie ->
             val text_entries = specie.flavor_text_entries.filter { it.language.name == "en" }
@@ -238,6 +280,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Set stats such ATTACK, DEFENSE and etc
+     */
     private fun setStats(pokemon: Pokemon) {
         val myChart: HorizontalBarChartView = binding.myChart
         val mySet = mutableSetOf<Pair<String, Float>>()
@@ -259,6 +304,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         myChart.show(mySet.toList())
     }
 
+    /**
+     * Set types such Grass, Poison and etc. Insert items into adapter too.
+     */
     private fun setTypes(pokemon: Pokemon) {
         with(binding.includeCardPokemonInfoAndImage) {
             val layoutManager = GridLayoutManager(applicationContext, 2)
@@ -269,6 +317,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Check abilities and add palette colors.
+     */
     private fun setAbilities(pokemon: Pokemon) {
         pokemon.abilities?.let { abilitie ->
             binding.cardAbilities.setData(
@@ -279,6 +330,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Check evolutions from getListEvolutions() and organize on screen with action detail.
+     */
     private fun setEvolutions(pokemon: Pokemon) {
         with(binding) {
             val layoutManager =
@@ -307,6 +361,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * If mystical or legendary, add mystical or legendary image.
+     */
     private fun setIconsMythicalAndLegendary(pokemon: Pokemon) {
         pokemon.specie?.let {
             with(binding.includeCardPokemonInfoAndImage) {
@@ -330,6 +387,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Get species pokemon and return evolutions from getEvolvesTo().
+     */
     private fun getListEvolutions(evolution: EvolutionChain): MutableList<Pair<String, String>> {
         var list_evolutions = mutableListOf<Pair<String, String>>()
         evolution.chain.species?.let {
@@ -339,6 +399,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         return list_evolutions
     }
 
+    /**
+     * Organize evolutions pokemon from species.
+     */
     private fun getEvolvesTo(
         chain: Chain,
         list_evolutions: MutableList<Pair<String, String>>
@@ -358,6 +421,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         return list_evolutions
     }
 
+    /**
+     * Set pokemon image in imageView.
+     */
     private fun getPokemonImage(pokemon: Pokemon) {
         val url_image = "${URL_IMAGE}${pokemon.name.lowercase()}${TYPE_IMAGE}"
         Picasso.get()
@@ -369,6 +435,9 @@ class PokemonDetailActivity : AppCompatActivity() {
             .into(binding.includeCardPokemonInfoAndImage.imageSprite)
     }
 
+    /**
+     * Get dominant color and set colors in actionbar and layout background.
+     */
     private fun getDominantColor(pokemon: Pokemon) {
         val url_image = "${URL_IMAGE}${pokemon.name.lowercase()}${TYPE_IMAGE}"
         Picasso.get().load(url_image).into(object : com.squareup.picasso.Target {
@@ -402,7 +471,7 @@ class PokemonDetailActivity : AppCompatActivity() {
     }
 
     /**
-     * Adiciona os valores booleanos de favoritar.
+     * Add the boolean values of the favorite.
      */
     private fun setPreferences(name: String, value: Boolean) {
         val sharedPref = this.getSharedPreferences(PokemonAdapter.FAVORITES, Context.MODE_PRIVATE)
@@ -412,12 +481,18 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Get favorite preferences and add into global parameter favorite.
+     */
     private fun getPreferences(name: String) {
         val sharedPreferences =
             this.getSharedPreferences(PokemonAdapter.FAVORITES, Context.MODE_PRIVATE)
         favorite = sharedPreferences.getBoolean(name, false)
     }
 
+    /**
+     * Add ico favorite in actionbar.
+     */
     private fun getFavoriteIconStatus() {
         optionsMenu?.let {
             val item = it.findItem(R.id.action_favorite)
@@ -429,6 +504,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Add ico favorite in actionbar.
+     */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.detail_menu, menu)
         menu?.let {
@@ -437,6 +515,9 @@ class PokemonDetailActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    /**
+     * Add action home and favorite.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.getItemId()) {
             android.R.id.home -> {

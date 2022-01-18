@@ -3,7 +3,6 @@ package com.example.pokedex
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.api.data.Default
-import com.example.pokedex.api.data.Type
 import com.example.pokedex.databinding.TypeViewholderBinding
 
 class PokemonTypeViewHolder(val binding: TypeViewholderBinding) :

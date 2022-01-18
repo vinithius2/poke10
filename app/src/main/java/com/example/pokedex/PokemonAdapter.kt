@@ -1,18 +1,15 @@
 package com.example.pokedex
 
 import android.content.Context
-import android.graphics.drawable.AnimationDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.api.data.Pokemon
 import com.example.pokedex.databinding.PokemonViewholderBinding
-import com.squareup.picasso.Picasso
 
 
 class PokemonAdapter(
@@ -46,7 +43,6 @@ class PokemonAdapter(
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         holder.bind(
             dataSetFilter[position],
-            dataSetFilter.size,
             onCallBackClickDetail,
             ::callBackRemoveFavorite,
             favorites_filter,
@@ -54,6 +50,9 @@ class PokemonAdapter(
         )
     }
 
+    /**
+     * Callback remove item.
+     */
     private fun callBackRemoveFavorite(position: Int) {
         dataSetFilter.removeAt(position)
         onCallBackDataSetFilterRemove?.invoke(dataSetFilter.size, position)
@@ -62,7 +61,7 @@ class PokemonAdapter(
     override fun getItemCount() = dataSetFilter.size
 
     /**
-     * Retorna a lista de favoritos
+     * Returns the favorites list.
      */
     fun getFavorites(filter: Boolean) {
         val sharedPreferences = view.context.getSharedPreferences(FAVORITES, Context.MODE_PRIVATE)
@@ -91,7 +90,7 @@ class PokemonAdapter(
     }
 
     /**
-     * Adiciona o valor em CharSequence em uma variável global.
+     * Adds the value in CharSequence to a global variable.
      */
     fun setCharSequence(char: CharSequence?) {
         char?.let {
@@ -104,7 +103,7 @@ class PokemonAdapter(
     }
 
     /**
-     * Filtra a lista de pokemons de acordo com o texto na busca.
+     * Filters the list of pokemons according to the search text.
      */
     private fun filterSearchAndIsFavorite(
         char_sequence: CharSequence?,
@@ -124,7 +123,7 @@ class PokemonAdapter(
     }
 
     /**
-     * Instância de Filter() que faz a lógica de busca.
+     * Filter() instance that does the search logic.
      */
     private val filterVal = object : Filter() {
         // Run on background thread

@@ -11,7 +11,6 @@ class PokemonViewHolder(val binding: PokemonViewholderBinding) :
 
     fun bind(
         pokemon: Pokemon,
-        dataSetFilterSize: Int,
         onCallBackClickDetail: ((url: String) -> Unit)?,
         callBackRemoveFavorite: ((position: Int) -> Unit)?,
         favorites_filter: Boolean,

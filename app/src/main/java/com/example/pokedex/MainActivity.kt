@@ -13,7 +13,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.ActivityMainBinding
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -38,8 +37,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Notifica o adapter todas vez que voltar da tela de detalhes, pois pode haver mudanças no status
-     * de favoritos.
+     * Notifies the adapter every time it comes back from the details screen, as the status may change
+     * from favorites.
      */
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
@@ -49,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
     }
 
+    /**
+     * Config actionbar for add logo ico, enabled app title and show menu.
+     */
     private fun setConfigActionBar() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -56,6 +58,9 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
     }
 
+    /**
+     * When request start, loading is visible, however, when finish, loading is invisible.
+     */
     private fun observerPokemonLoading() {
         viewModel.pokemonListLoading.observe(this, { loading ->
             if (loading) {
@@ -66,6 +71,9 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Insert pokemons in adapter and add actions in filters callbacks.
+     */
     private fun observerPokemonList() {
         val layoutManager = LinearLayoutManager(applicationContext)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
@@ -122,6 +130,9 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * If is error, main layout is hidden and show layout error.
+     */
     private fun observerPokemonTextError() {
         viewModel.pokemonTextError.observe(this, { id_text_error ->
             id_text_error?.let {
@@ -139,7 +150,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Altera no título, subtítulo e a imagem do fundo da tela pata notificar quando não há favoritos
+     * Change title, subtitle and background image to notify you when there are no favorites.
      */
     private fun msgFavoriteIsEmpty(
         title: TextView,
@@ -154,7 +165,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Altera no título, subtítulo e a imagem do fundo da tela pata notificar quando não há pokemons filtrados
+     * Change the title, subtitle and the screen background image to notify you when there are no pokemons filtered.
      */
     private fun msgFilterIsEmpty(
         title: TextView,
@@ -168,6 +179,9 @@ class MainActivity : AppCompatActivity() {
         image_itens_empty.layoutParams.width = 100
     }
 
+    /**
+     * Add action search in item menu
+     */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         val item = menu?.findItem(R.id.action_search)
@@ -188,6 +202,9 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    /**
+     * Add ico favorite in actionbar.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_favorite -> {

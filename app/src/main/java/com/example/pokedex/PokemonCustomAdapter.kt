@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.ShapeDefaultViewholderBinding
 
 class PokemonCustomAdapter(
-    val item_list: List<String>,
-    val dark: Palette.Swatch?,
-    val dominant: Palette.Swatch?,
-    val drawable: Drawable?,
-    val title_item_right: String?,
-    val hidden_list: List<Boolean>?,
+    private val item_list: List<String>,
+    private val dark: Palette.Swatch?,
+    private val dominant: Palette.Swatch?,
+    private val drawable: Drawable?,
+    private val title_item_right: String?,
+    private val hidden_list: List<Boolean>?,
 ) : RecyclerView.Adapter<PokemonCustomViewHolder>() {
 
     private lateinit var view: View
@@ -33,7 +33,6 @@ class PokemonCustomAdapter(
     }
 
     override fun onBindViewHolder(holder: PokemonCustomViewHolder, position: Int) {
-
         val hidden: Boolean? = if (hidden_list.isNullOrEmpty()) null else hidden_list[position]
         holder.bind(
             item_list[position],

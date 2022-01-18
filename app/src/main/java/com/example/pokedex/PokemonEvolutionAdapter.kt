@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.EvolutionViewholderBinding
 
 class PokemonEvolutionAdapter(
-    val pokemon_evolution: MutableList<Pair<String, String>>
+    private val pokemon_evolution: MutableList<Pair<String, String>>
 ) : RecyclerView.Adapter<PokemonEvolutionViewHolder>() {
 
     var onCallBackClickDetail: ((url: String, name: String) -> Unit)? = null
@@ -30,6 +30,9 @@ class PokemonEvolutionAdapter(
         holder.bind(position, pokemon_evolution, ::onCallBack)
     }
 
+    /**
+     * Action for details screen passing pokemon name.
+     */
     private fun onCallBack(url: String, name: String) {
         onCallBackClickDetail?.invoke(url, name)
     }

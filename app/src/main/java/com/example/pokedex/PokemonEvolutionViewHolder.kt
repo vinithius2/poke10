@@ -26,7 +26,7 @@ class PokemonEvolutionViewHolder(val binding: EvolutionViewholderBinding) :
     }
 
     /**
-     * Adiciona a imagem do pokemon da fonte "img.pokemondb" em cada item da lista.
+     * Add the pokemon image from the source "img.pokemondb" to each item in the list.
      */
     private fun setImage(name: String) {
         val url_image = "https://img.pokemondb.net/artwork/${name.lowercase()}.jpg"
