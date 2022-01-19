@@ -3,45 +3,40 @@ package com.example.pokedex
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import com.example.pokedex.databinding.EvolutionViewholderBinding
 
 class PokemonEvolutionAdapter(
-    val pokemon_evolution: MutableList<Pair<String, String>>
+    private val pokemon_evolution: MutableList<Pair<String, String>>
 ) : RecyclerView.Adapter<PokemonEvolutionViewHolder>() {
 
-    var onCallBackClickDetail: ((url: String) -> Unit)? = null
+    var onCallBackClickDetail: ((url: String, name: String) -> Unit)? = null
+    private lateinit var view: View
+    private lateinit var binding: EvolutionViewholderBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonEvolutionViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.evolution_viewholder, parent, false)
-        return PokemonEvolutionViewHolder(view)
+        binding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.evolution_viewholder,
+            parent,
+            false
+        )
+        view = binding.root
+        return PokemonEvolutionViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PokemonEvolutionViewHolder, position: Int) {
-        val (name, url) = pokemon_evolution[position]
-        holder.text_name_pokemon.text = name
-        setImage(name, holder)
-        if (pokemon_evolution.size == position + 1) {
-            holder.arrow_evolution.visibility = View.INVISIBLE
-        }
-        holder.card_evolutions.setOnClickListener {
-            pokemon_evolution[position]
-            onCallBackClickDetail?.invoke(url)
-        }
+        holder.bind(position, pokemon_evolution, ::onCallBack)
+    }
+
+    /**
+     * Action for details screen passing pokemon name.
+     */
+    private fun onCallBack(url: String, name: String) {
+        onCallBackClickDetail?.invoke(url, name)
     }
 
     override fun getItemCount() = pokemon_evolution.size
-
-    /**
-     * Adiciona a imagem do pokemon da fonte "img.pokemondb" em cada item da lista.
-     */
-    private fun setImage(name: String, holder: PokemonEvolutionViewHolder) {
-        val url_image = "https://img.pokemondb.net/artwork/${name.lowercase()}.jpg"
-        Picasso.get()
-            .load(url_image)
-            .error(R.drawable.ic_error_image)
-            .into(holder.image_pokemon)
-    }
 
 }

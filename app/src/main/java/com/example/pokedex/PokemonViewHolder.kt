@@ -1,16 +1,47 @@
 package com.example.pokedex
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokedex.api.data.Pokemon
+import com.example.pokedex.databinding.PokemonViewholderBinding
+import com.example.pokedex.extension.capitalize
+import com.squareup.picasso.Picasso
 
-class PokemonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PokemonViewHolder(val binding: PokemonViewholderBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
-    val layout_data: View = itemView.findViewById(R.id.layout_data)
-    val layout_pokeball: View = itemView.findViewById(R.id.layout_pokeball)
-    val textView: TextView = itemView.findViewById(R.id.title_pokemon)
-    val image_pokemon: ImageView = itemView.findViewById(R.id.image_pokemon)
-    val image_pokeball: ImageView = itemView.findViewById(R.id.image_pokeball)
+    fun bind(
+        pokemon: Pokemon,
+        onCallBackClickDetail: ((url: String) -> Unit)?,
+        callBackRemoveFavorite: ((position: Int) -> Unit)?,
+        favorites_filter: Boolean,
+        position: Int
+    ) {
+        binding.titlePokemon.text = pokemon.name.capitalize()
+        binding.layoutData.setOnClickListener {
+            pokemon.url?.let { url -> onCallBackClickDetail?.invoke(url) }
+        }
+        with(binding.imgPokeball) {
+            setData(pokemon.name)
+            setOnClickListener {
+                if (clickPokeball()) {
+                    if (favorites_filter) {
+                        callBackRemoveFavorite?.invoke(position)
+                    }
+                }
+            }
+        }
+        setImage(pokemon.name)
+    }
+
+    /**
+     * Adiciona a imagem do pokemon da fonte "img.pokemondb" em cada item da lista.
+     */
+    private fun setImage(name: String) {
+        val url_image = "https://img.pokemondb.net/artwork/${name.lowercase()}.jpg"
+        Picasso.get()
+            .load(url_image)
+            .error(R.drawable.ic_error_image)
+            .into(binding.imagePokemon)
+    }
 
 }

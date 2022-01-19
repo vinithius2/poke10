@@ -2,7 +2,7 @@ package com.example.pokedex.api.data
 
 data class Specie (
     val base_happiness: Int,
-    val capture_rate: Int,
+    val capture_rate: Int?,
     val color: Default,
     val egg_groups: List<Default>,
     val evolution_chain: DefaultUrl,

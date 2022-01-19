@@ -1,14 +1,38 @@
 package com.example.pokedex
 
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokedex.databinding.EvolutionViewholderBinding
+import com.example.pokedex.extension.capitalize
+import com.squareup.picasso.Picasso
 
-class PokemonEvolutionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val card_evolutions: CardView = itemView.findViewById(R.id.card_evolutions)
-    val image_pokemon: ImageView = itemView.findViewById(R.id.image_pokemon)
-    val arrow_evolution: ImageView = itemView.findViewById(R.id.arrow_evolution)
-    val text_name_pokemon: TextView = itemView.findViewById(R.id.text_name_pokemon)
+class PokemonEvolutionViewHolder(val binding: EvolutionViewholderBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(
+        position: Int,
+        evolution_list: MutableList<Pair<String, String>>,
+        onCallBackClickDetail: (url: String, name: String) -> Unit
+    ) {
+        val (name, url) = evolution_list[position]
+        binding.textNamePokemon.text = name.capitalize()
+        setImage(name)
+        if (evolution_list.size == position + 1) {
+            binding.arrowEvolution.visibility = View.INVISIBLE
+        }
+        binding.cardEvolutions.setOnClickListener {
+            onCallBackClickDetail.invoke(url, name)
+        }
+    }
+
+    /**
+     * Add the pokemon image from the source "img.pokemondb" to each item in the list.
+     */
+    private fun setImage(name: String) {
+        val url_image = "https://img.pokemondb.net/artwork/${name.lowercase()}.jpg"
+        Picasso.get()
+            .load(url_image)
+            .error(R.drawable.ic_error_image)
+            .into(binding.imagePokemon)
+    }
 }

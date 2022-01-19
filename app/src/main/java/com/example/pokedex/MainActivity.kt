@@ -1,19 +1,19 @@
 package com.example.pokedex
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.pokedex.databinding.ActivityMainBinding
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
@@ -22,25 +22,25 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: PokemonViewModel by viewModel()
     private var favorites_filter = false
     private lateinit var pokemonAdapter: PokemonAdapter
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(R.drawable.pokemon_logo_small)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setConfigActionBar()
         observerPokemonLoading()
         observerPokemonList()
+        observerPokemonTextError()
         with(viewModel) {
             getPokemonList(LIMIT)
         }
     }
 
     /**
-     * Notifica o adapter todas vez que voltar da tela de detalhes, pois pode haver mudanças no status
-     * de favoritos.
+     * Notifies the adapter every time it comes back from the details screen, as the status may change
+     * from favorites.
      */
+    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         if (::pokemonAdapter.isInitialized) {
             pokemonAdapter.notifyDataSetChanged()
@@ -48,70 +48,109 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
     }
 
-    private fun observerPokemonLoading() {
-        viewModel.pokemonListLoading.observe(this, { loading ->
-            val loading_list_pokemon = findViewById<ProgressBar>(R.id.loading_list_pokemon)
-            if (loading) {
-                loading_list_pokemon.visibility = View.VISIBLE
-            } else {
-                loading_list_pokemon.visibility = View.INVISIBLE
-            }
-        })
+    /**
+     * Config actionbar for add logo ico, enabled app title and show menu.
+     */
+    private fun setConfigActionBar() {
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(R.drawable.pokemon_logo_small)
+        supportActionBar?.hide()
     }
 
-    private fun observerPokemonList() {
-        recyclerView = findViewById(R.id.recycler_view_pokemon)
-        val layoutManager = LinearLayoutManager(applicationContext)
-        recyclerView.layoutManager = layoutManager
-
-        val layout_sem_itens_na_busca = findViewById<LinearLayout>(R.id.layout_sem_itens_na_busca)
-        val msg_empty_title = findViewById<TextView>(R.id.msg_empty_title)
-        val msg_empty_subtitle = findViewById<TextView>(R.id.msg_empty_subtitle)
-        val image_itens_empty = findViewById<ImageView>(R.id.sem_itens_na_busca)
-
-        viewModel.pokemonList.observe(this, { pokemonList ->
-            pokemonAdapter = PokemonAdapter(pokemonList).apply {
-                onCallBackDataSetFilterRemove = { size, position ->
-                    notifyItemRemoved(position)
-                    notifyItemRangeChanged(position, size)
-                    if (size == 0) {
-                        layout_sem_itens_na_busca.visibility = View.VISIBLE
-                        msgFavoriteIsEmpty(msg_empty_title, msg_empty_subtitle, image_itens_empty)
-                    } else {
-                        layout_sem_itens_na_busca.visibility = View.INVISIBLE
-                    }
-                }
-                onCallBackDataSetFilterSize = { size ->
-                    notifyDataSetChanged()
-                    if (size > 0) {
-                        layout_sem_itens_na_busca.visibility = View.INVISIBLE
-                    } else {
-                        layout_sem_itens_na_busca.visibility = View.VISIBLE
-                        if (favorites_filter) {
-                            msgFavoriteIsEmpty(
-                                msg_empty_title,
-                                msg_empty_subtitle,
-                                image_itens_empty
-                            )
-                        } else {
-                            msgFilterIsEmpty(msg_empty_title, msg_empty_subtitle, image_itens_empty)
-                        }
-                    }
-                }
-                onCallBackClickDetail = { url ->
-                    val bundle = Bundle()
-                    bundle.putString("url_detail", url)
-                    val intent = Intent(this@MainActivity, PokemonDetailActivity::class.java)
-                    intent.putExtras(bundle)
-                    startActivity(intent)
-                }
+    /**
+     * When request start, loading is visible, however, when finish, loading is invisible.
+     */
+    private fun observerPokemonLoading() {
+        viewModel.pokemonListLoading.observe(this, { loading ->
+            if (loading) {
+                binding.loadingListPokemon.visibility = View.VISIBLE
+            } else {
+                binding.loadingListPokemon.visibility = View.GONE
             }
-            recyclerView.adapter = pokemonAdapter
         })
     }
 
     /**
-     * Altera no título, subtítulo e a imagem do fundo da tela pata notificar quando não há favoritos
+     * Insert pokemons in adapter and add actions in filters callbacks.
+     */
+    private fun observerPokemonList() {
+        val layoutManager = LinearLayoutManager(applicationContext)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        binding.recyclerViewPokemon.layoutManager = layoutManager
+        viewModel.pokemonList.observe(this, { pokemonList ->
+            if (pokemonList.isNotEmpty()) {
+                binding.recyclerViewPokemon.visibility = View.VISIBLE
+                supportActionBar?.show()
+                pokemonAdapter = PokemonAdapter(pokemonList).apply {
+                    with(binding) {
+                        onCallBackDataSetFilterRemove = { size, position ->
+                            notifyItemRemoved(position)
+                            notifyItemRangeChanged(position, size)
+                            if (size == 0) {
+                                layoutSemItensNaBusca.visibility = View.VISIBLE
+                                msgFavoriteIsEmpty(msgEmptyTitle, msgEmptySubtitle, semItensNaBusca)
+                            } else {
+                                layoutSemItensNaBusca.visibility = View.INVISIBLE
+                            }
+                        }
+                        onCallBackDataSetFilterSize = { size, is_favorite ->
+                            notifyDataSetChanged()
+                            if (size > 0) {
+                                layoutSemItensNaBusca.visibility = View.INVISIBLE
+                            } else {
+                                layoutSemItensNaBusca.visibility = View.VISIBLE
+                                if (is_favorite) {
+                                    msgFavoriteIsEmpty(
+                                        msgEmptyTitle,
+                                        msgEmptySubtitle,
+                                        semItensNaBusca
+                                    )
+                                } else {
+                                    msgFilterIsEmpty(
+                                        msgEmptyTitle,
+                                        msgEmptySubtitle,
+                                        semItensNaBusca
+                                    )
+                                }
+                            }
+                        }
+                        onCallBackClickDetail = { url ->
+                            val bundle = Bundle()
+                            bundle.putString("url_detail", url)
+                            val intent =
+                                Intent(this@MainActivity, PokemonDetailActivity::class.java)
+                            intent.putExtras(bundle)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                binding.recyclerViewPokemon.adapter = pokemonAdapter
+            }
+        })
+    }
+
+    /**
+     * If is error, main layout is hidden and show layout error.
+     */
+    private fun observerPokemonTextError() {
+        viewModel.pokemonTextError.observe(this, { id_text_error ->
+            id_text_error?.let {
+                supportActionBar?.hide()
+                binding.layoutError.root.visibility = View.VISIBLE
+                binding.layoutError.textError.text = getString(it)
+                binding.recyclerViewPokemon.visibility = View.GONE
+                binding.loadingListPokemon.visibility = View.GONE
+                binding.layoutError.btnReloading.setOnClickListener {
+                    viewModel.getPokemonList(LIMIT)
+                    binding.layoutError.root.visibility = View.GONE
+                }
+            }
+        })
+    }
+
+    /**
+     * Change title, subtitle and background image to notify you when there are no favorites.
      */
     private fun msgFavoriteIsEmpty(
         title: TextView,
@@ -126,7 +165,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Altera no título, subtítulo e a imagem do fundo da tela pata notificar quando não há pokemons filtrados
+     * Change the title, subtitle and the screen background image to notify you when there are no pokemons filtered.
      */
     private fun msgFilterIsEmpty(
         title: TextView,
@@ -135,11 +174,14 @@ class MainActivity : AppCompatActivity() {
     ) {
         title.text = getString(R.string.there_are_no_items_in_the_search_title)
         subtitle.text = getString(R.string.there_are_no_items_in_the_search_subtitle)
-        image_itens_empty.setImageResource(R.drawable.ic_baseline_assignment_late_24)
+        image_itens_empty.setImageResource(R.drawable.pokeball_03_gray)
         image_itens_empty.layoutParams.height = 120
         image_itens_empty.layoutParams.width = 100
     }
 
+    /**
+     * Add action search in item menu
+     */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         val item = menu?.findItem(R.id.action_search)
@@ -160,6 +202,9 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    /**
+     * Add ico favorite in actionbar.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_favorite -> {
