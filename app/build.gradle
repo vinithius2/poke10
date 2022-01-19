@@ -9,7 +9,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.pokedex"
+        applicationId "com.vinithius.poke10"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
