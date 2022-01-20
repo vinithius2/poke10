@@ -2,7 +2,6 @@ package com.example.pokedex.components
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokedex.PokemonCustomAdapter
-import com.example.pokedex.PokemonDamageViewHolder
 import com.example.pokedex.R
 import com.example.pokedex.databinding.PokemonCustomListItemComponentBinding
 import com.example.pokedex.extension.collapse
@@ -36,7 +34,7 @@ class PokemonCustomListItemComponent(context: Context, attrs: AttributeSet?) :
 
     private var title_item_right: String? = null
     private var title_card: String? = null
-        set(value) = setTitle(value)
+        set(value) = setTitle(context, value)
 
     private var hidden_list_card: List<Boolean>? = null
     private var data_list_card: List<String> = listOf()
@@ -62,14 +60,19 @@ class PokemonCustomListItemComponent(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    private fun setIco(value: String) {
-        val imgUri: Uri? = Uri.parse(
-            "${PokemonDamageViewHolder.URI_BASE}ic_left_${
-                value.replace(" ", "_").lowercase()
-            }"
-        )
-        imgUri?.let {
-            binding.icoLeft.setImageURI(imgUri)
+    private fun setIco(title: String) {
+        getIco(title)?.let {
+            binding.icoLeft.setImageResource(it)
+        }
+    }
+
+    private fun getIco(title: String): Int? {
+        return when (title.lowercase()) {
+            ABILITIES -> R.drawable.ic_left_abilities
+            EGG_GROUPS -> R.drawable.ic_left_egg_groups
+            HABITAT -> R.drawable.ic_left_habitat
+            ENCOUNTERS -> R.drawable.ic_left_encounters
+            else -> null
         }
     }
 
@@ -88,7 +91,7 @@ class PokemonCustomListItemComponent(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    private fun setTitle(value: String?) {
+    private fun setTitle(context: Context, value: String?) {
         value?.let {
             binding.titleCustom.text = it
             setIco(it)
@@ -117,7 +120,7 @@ class PokemonCustomListItemComponent(context: Context, attrs: AttributeSet?) :
         dark: Palette.Swatch?,
         dominant: Palette.Swatch?,
         data_list: List<String>,
-        hidden_list: List<Boolean>? = null,
+        hidden_list: List<Boolean>? = null
     ) {
         dark_card = dark
         dominant_card = dominant
@@ -126,6 +129,10 @@ class PokemonCustomListItemComponent(context: Context, attrs: AttributeSet?) :
     }
 
     companion object {
-        const val URI_BASE = "android.resource://com.example.pokedex/drawable/"
+        const val ABILITIES = "abilities"
+        const val EGG_GROUPS = "egg groups"
+        const val HABITAT = "habitat"
+        const val ENCOUNTERS = "encounters"
     }
+
 }

@@ -1,6 +1,6 @@
 package com.example.pokedex
 
-import android.net.Uri
+import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,16 +13,17 @@ import com.example.pokedex.databinding.DamageViewholderBinding
 import com.example.pokedex.extension.capitalize
 import com.example.pokedex.extension.collapse
 import com.example.pokedex.extension.getCollapseAndExpand
+import com.example.pokedex.extension.setDrawableIco
 
 class PokemonDamageViewHolder(val binding: DamageViewholderBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     private var action_expand_card: Boolean = false
 
-    fun bind(damage: Damage) {
+    fun bind(context: Context, damage: Damage) {
         with(binding) {
             constraintlayoutCustom.collapse()
-            setIco(damage, imageType)
+            setIco(context, damage, imageType)
             setTitle(damage, titleDamage)
             cardviewCustom.setOnClickListener {
                 action_expand_card =
@@ -38,9 +39,8 @@ class PokemonDamageViewHolder(val binding: DamageViewholderBinding) :
     /**
      * Add drawable damage left ico in ImageView.
      */
-    private fun setIco(damage: Damage, imageType: ImageView) {
-        val imgUri: Uri = Uri.parse("${URI_BASE}${damage.type.name}")
-        imageType.setImageURI(imgUri)
+    private fun setIco(context: Context, damage: Damage, imageType: ImageView) {
+        damage.type.name.setDrawableIco(context, imageType)
     }
 
     /**
