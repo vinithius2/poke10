@@ -134,8 +134,12 @@ fun View.getCollapseAndExpand(expand: Boolean, arrow: View): Boolean {
  * Set pokemon image in imageView.
  */
 fun ImageView.setPokemonImage(pokemon: Pokemon, callBackUrl: ((url: String?) -> Unit)) {
-    var urlImage: String? = "https://img.pokemondb.net/artwork/${pokemon.name.lowercase()}.jpg"
     val imageView = this
+    var urlImage = "https://img.pokemondb.net/artwork/${pokemon.name.lowercase()}.jpg"
+    if (pokemon.name.lowercase().split("-").last() == "totem") {
+        val name = pokemon.name.lowercase().dropLast(6)
+        urlImage = "https://img.pokemondb.net/artwork/${name}.jpg"
+    }
     Picasso.get()
         .load(urlImage)
         .into(imageView, object : Callback {
