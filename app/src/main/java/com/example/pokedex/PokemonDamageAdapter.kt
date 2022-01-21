@@ -27,7 +27,7 @@ class PokemonDamageAdapter(
     }
 
     override fun onBindViewHolder(holder: PokemonDamageViewHolder, position: Int) {
-        holder.bind(pokemon_damage_list[position])
+        holder.bind(view.context, pokemon_damage_list[position])
     }
 
     override fun getItemCount() = pokemon_damage_list.size

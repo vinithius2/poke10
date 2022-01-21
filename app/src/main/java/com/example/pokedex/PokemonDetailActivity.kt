@@ -424,26 +424,16 @@ class PokemonDetailActivity : AppCompatActivity() {
      * Set pokemon image in imageView.
      */
     private fun getPokemonImage(pokemon: Pokemon) {
-        var url_image = "${FIRST_BASE_URL}${pokemon.name.lowercase()}${JPG}"
-        Picasso.get()
-            .load(url_image)
-            .into(binding.includeCardPokemonInfoAndImage.imagePokemon, object : Callback {
-                override fun onSuccess() {
-                    getDominantColor(url_image)
+        with(binding.includeCardPokemonInfoAndImage) {
+            imagePokemon.setPokemonImage(pokemon) { urlImage ->
+                urlImage?.let {
+                    getDominantColor(it)
                 }
-
-                override fun onError(e: Exception?) {
-                    url_image = "${SECOND_BASE_URL}${pokemon.id.toString()}${PNG}"
-                    Picasso.get()
-                        .load(url_image)
-                        .error(R.drawable.ic_error_image)
-                        .into(binding.includeCardPokemonInfoAndImage.imagePokemon)
-                    getDominantColor(url_image)
-                }
-            })
-        Picasso.get()
-            .load(pokemon.sprites.front_default)
-            .into(binding.includeCardPokemonInfoAndImage.imageSprite)
+            }
+            Picasso.get()
+                .load(pokemon.sprites?.front_default)
+                .into(binding.includeCardPokemonInfoAndImage.imageSprite)
+        }
     }
 
     /**
@@ -477,9 +467,7 @@ class PokemonDetailActivity : AppCompatActivity() {
 
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
 
-            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                print("")
-            }
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
         })
     }
 
@@ -545,13 +533,5 @@ class PokemonDetailActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    companion object {
-        const val FIRST_BASE_URL = "https://img.pokemondb.net/artwork/"
-        const val SECOND_BASE_URL =
-            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
-        const val PNG = ".png"
-        const val JPG = ".jpg"
     }
 }
