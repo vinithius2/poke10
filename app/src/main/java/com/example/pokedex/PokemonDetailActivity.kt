@@ -26,6 +26,7 @@ import com.example.pokedex.api.data.EvolutionChain
 import com.example.pokedex.api.data.Pokemon
 import com.example.pokedex.databinding.ActivityPokemonDetailBinding
 import com.example.pokedex.extension.*
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -69,8 +70,7 @@ class PokemonDetailActivity : AppCompatActivity() {
     private fun getExtras() {
         intent.extras?.let { bundle ->
             val url = bundle.getString("url_detail").toString()
-            val parse = Uri.parse(url)
-            parse.pathSegments.getOrNull(3)?.let {
+            url.getIdIntoUrl()?.let {
                 viewModel.getPokemonDetail(it.toInt())
             }
         }
@@ -134,7 +134,6 @@ class PokemonDetailActivity : AppCompatActivity() {
                 pokemon_name = pokemon.name
                 getPreferences(pokemon_name)
                 getFavoriteIconStatus()
-                getDominantColor(pokemon)
                 getPokemonImage(pokemon)
                 setOutputs(pokemon)
             }
@@ -425,22 +424,24 @@ class PokemonDetailActivity : AppCompatActivity() {
      * Set pokemon image in imageView.
      */
     private fun getPokemonImage(pokemon: Pokemon) {
-        val url_image = "${URL_IMAGE}${pokemon.name.lowercase()}${TYPE_IMAGE}"
-        Picasso.get()
-            .load(url_image)
-            .error(R.drawable.ic_error_image)
-            .into(binding.includeCardPokemonInfoAndImage.imagePokemon)
-        Picasso.get()
-            .load(pokemon.sprites.front_default)
-            .into(binding.includeCardPokemonInfoAndImage.imageSprite)
+        with(binding.includeCardPokemonInfoAndImage) {
+            imagePokemon.setPokemonImage(pokemon) { urlImage ->
+                urlImage?.let {
+                    getDominantColor(it)
+                }
+            }
+            Picasso.get()
+                .load(pokemon.sprites?.front_default)
+                .into(binding.includeCardPokemonInfoAndImage.imageSprite)
+        }
     }
 
     /**
      * Get dominant color and set colors in actionbar and layout background.
      */
-    private fun getDominantColor(pokemon: Pokemon) {
-        val url_image = "${URL_IMAGE}${pokemon.name.lowercase()}${TYPE_IMAGE}"
-        Picasso.get().load(url_image).into(object : com.squareup.picasso.Target {
+    private fun getDominantColor(urlImage: String) {
+        Picasso.get().load(urlImage).into(object : com.squareup.picasso.Target {
+
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                 bitmap?.let { bitmap_to_pallete ->
                     palette = Palette.from(bitmap_to_pallete).generate()
@@ -532,10 +533,5 @@ class PokemonDetailActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    companion object {
-        const val URL_IMAGE = "https://img.pokemondb.net/artwork/"
-        const val TYPE_IMAGE = ".jpg"
     }
 }
