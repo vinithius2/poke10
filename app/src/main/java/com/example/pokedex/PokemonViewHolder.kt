@@ -4,7 +4,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.api.data.Pokemon
 import com.example.pokedex.databinding.PokemonViewholderBinding
 import com.example.pokedex.extension.capitalize
-import com.squareup.picasso.Picasso
+import com.example.pokedex.extension.setPokemonImage
+
 
 class PokemonViewHolder(val binding: PokemonViewholderBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -30,18 +31,13 @@ class PokemonViewHolder(val binding: PokemonViewholderBinding) :
                 }
             }
         }
-        setImage(pokemon.name)
+        setImage(pokemon)
     }
 
     /**
      * Adiciona a imagem do pokemon da fonte "img.pokemondb" em cada item da lista.
      */
-    private fun setImage(name: String) {
-        val url_image = "https://img.pokemondb.net/artwork/${name.lowercase()}.jpg"
-        Picasso.get()
-            .load(url_image)
-            .error(R.drawable.ic_error_image)
-            .into(binding.imagePokemon)
+    private fun setImage(pokemon: Pokemon) {
+        binding.imagePokemon.setPokemonImage(pokemon) {}
     }
-
 }
