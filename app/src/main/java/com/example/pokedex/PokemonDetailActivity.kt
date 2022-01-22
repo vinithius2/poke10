@@ -209,8 +209,8 @@ class PokemonDetailActivity : AppCompatActivity() {
     private fun setHabitat(pokemon: Pokemon) {
         pokemon.specie?.let {
             with(binding) {
-                cardHabitat.visibility = View.VISIBLE
                 it.habitat?.name?.capitalize()?.let {
+                    cardHabitat.visibility = View.VISIBLE
                     cardHabitat.setData(dark, dominant, listOf(it))
                 }
             }
